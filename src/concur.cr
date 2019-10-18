@@ -15,16 +15,19 @@ module Concur
       spawn(name: name) do
         debug("spawned", debug?)
         sleep t
-        select
-        when timeout.send nil
-        when time = terminate.receive
-          debug("Interrupted at #{time}", debug?)
-        end
-      rescue Channel::ClosedError
-        debug("close signal received", debug?)
-      ensure
-        debug("Shutting down", debug?)
         timeout.close()
+      end
+    }
+  end
+
+
+  def source(input : Enumerable(T)) forall T
+    Channel(T).new.tap { |stream|
+      spawn do
+        input.each { |value|
+          stream.send value
+        }
+        stream.close()
       end
     }
   end
@@ -87,10 +90,38 @@ abstract class ::Channel(T)
   include Concur::InChannel(T)
   include Concur::OutChannel(T)
 
+  # doesn't close the returned channel on source closure
+  # in order to avoid premature termination, e.g. w_1 closes
+  # the returned channel while w_2 hasn't published yet
+  def map(workers = 1, &block : T -> V) forall T,V
+    Channel(V).new.tap { |stream|
+      workers.times { |w_i|
+        spawn(name: "#{Fiber.current.name} > #{w_i}") do
+          self.listen { |v|
+            stream.send block.call(v)
+          }
+        end
+      }
+    }
+  end
+
+  def scan(acc : U, &block : U,T -> V) forall U,V
+    Channel(V).new.tap { |stream|
+      spawn do
+        self.listen { |v|
+          acc = block.call(acc, v)
+          stream.send acc
+        }
+        stream.close()
+      end
+    }
+  end
+
   def listen(&block : T ->)
     loop do
       block.call(self.receive)
     rescue Channel::ClosedError
+      puts "#{Fiber.current.name} rescuing"
       break
     end
   end
