@@ -10,7 +10,7 @@ module Concur
     abstract def send(value : T)
   end
 
-  def timer(t : Time::Span, name = nil, terminate = InChannel(Time).new, debug? = false) : Channel(Nil)
+  def timer(t : Time::Span, name = nil, debug? = false) : Channel(Nil)
     Channel(Nil).new.tap { |timeout|
       spawn(name: name) do
         debug("spawned", debug?)
@@ -21,7 +21,7 @@ module Concur
   end
 
 
-  def source(input : Enumerable(T)) forall T
+  def source(input : Enumerable(T)) : Channel(T) forall T
     Channel(T).new.tap { |stream|
       spawn do
         input.each { |value|
@@ -90,22 +90,27 @@ abstract class ::Channel(T)
   include Concur::InChannel(T)
   include Concur::OutChannel(T)
 
-  # doesn't close the returned channel on source closure
-  # in order to avoid premature termination, e.g. w_1 closes
-  # the returned channel while w_2 hasn't published yet
-  def map(workers = 1, &block : T -> V) forall T,V
+  def map(workers = 1, &block : T -> V) : Channel(V) forall T,V
     Channel(V).new.tap { |stream|
+      countdown = Channel(Nil).new(workers)
       workers.times { |w_i|
         spawn(name: "#{Fiber.current.name} > #{w_i}") do
           self.listen { |v|
             stream.send block.call(v)
           }
+        ensure
+          countdown.send(nil)
         end
       }
+      spawn(name: "#{Fiber.current.name} > countdown") do
+        workers.times { countdown.receive }
+        countdown.close
+        stream.close
+      end
     }
   end
 
-  def scan(acc : U, &block : U,T -> V) forall U,V
+  def scan(acc : U, &block : U,T -> V) : Channel(V) forall U,V
     Channel(V).new.tap { |stream|
       spawn do
         self.listen { |v|
@@ -113,6 +118,18 @@ abstract class ::Channel(T)
           stream.send acc
         }
         stream.close()
+      end
+    }
+  end
+
+  # TODO define a macro to return a Tuple
+  def broadcast(out_ports = 2, name = nil)
+    out_ports.times.map { Channel(T).new }.to_a.tap { |streams|
+      spawn(name: name) do
+        self.listen { |v|
+          streams.each(&.send(v))
+        }
+        streams.each(&.close())
       end
     }
   end

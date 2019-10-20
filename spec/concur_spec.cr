@@ -46,9 +46,11 @@ describe Concur do
         sleep rand
         v * 2
       }
-      # TODO
+      3.times { fact.receive }
+      expect_raises(Channel::ClosedError) {
+        fact.receive
+      }
     end
-    
   end
 
   describe "#scan" do
@@ -69,18 +71,15 @@ describe Concur do
       }
     end
   end
-  # it "processes on multiple concurrent fibers" do
-  #   k = 100
-  #   out_stream = process(ch, name = "processor", workers = 2, debug = true) { |value|
-  #     bus.send Processed.new(value.id)
-  #     value.id + 2
-  #   }
-  #   spawn do
-  #     k.times do ch.send Msg.new(1) end
-  #   end
-  #   k.times do
-  #     out_stream.receive
-  #   end
-  #   ch.close()
-  # end
+
+  describe "#broadcast" do
+    it "emits elements from its input port to all of its output ports" do
+      a, b, c = source(1..4).broadcast(3)
+      (1..4).each { |v|
+        a.receive.should eq(v)
+        b.receive.should eq(v)
+        c.receive.should eq(v)
+      }
+    end
+  end
 end
