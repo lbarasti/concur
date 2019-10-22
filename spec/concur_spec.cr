@@ -80,6 +80,11 @@ describe Concur do
         b.receive.should eq(v)
         c.receive.should eq(v)
       }
+      [a,b,c].each { |ch|
+        expect_raises(Channel::ClosedError) {
+          ch.receive
+        }
+      }
     end
   end
 end
