@@ -1,0 +1,5 @@
+urls:
+  - https://google.co.uk
+  - http://0.0.0.0:3000
+  - http://0.0.0.0:8000
+  - http://nonexistingurl.ch
