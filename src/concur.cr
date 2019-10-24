@@ -1,13 +1,10 @@
 module Concur
-  macro debug(msg, enable)
-    {% if enable %} puts "#{Fiber.current.name} > #{{{msg}}}" {% end %}
-  end
-
   def timer(t : Time::Span, name = nil) : Channel(Nil)
     Channel(Nil).new.tap { |timeout|
       spawn(name: name) do
         sleep t
         timeout.send nil
+        timeout.close()
       end
     }
   end
@@ -26,24 +23,18 @@ module Concur
   def every(t : Time::Span, name = nil, terminate = Channel(Time).new, debug? = false, &block : -> T) : Channel(T) forall T
     Channel(T).new.tap { |values|
       spawn(name: name) do
-        debug("spawned", debug?)
-        (1..).each do |i|
-          debug("loop #{(start = Time.utc) && i}", debug?)
+        loop do
           timeout = timer(t, name: "#{name}>timer")
           select
           when timeout.receive
             values.send block.call
-            debug("loop #{i} (#{(Time.utc - start).total_milliseconds}ms)", debug?)
           when time = terminate.receive
-            debug("Interrupted at #{time}", debug?)
             break
           end
         rescue Channel::ClosedError
-          debug("close signal received", debug?)
           break
         end
       ensure
-        debug("Shutting down", debug?)
         values.close()
       end
     }
@@ -57,6 +48,19 @@ module Concur
             out_stream.send(v)
           }
         }
+      end
+    }
+  end
+
+  def merge(stream_1 : Channel(K), stream_2 : Channel(J), name = nil) : Channel(K | J) forall K,J
+    Channel(K | J).new.tap { |out_stream|
+      spawn do
+        loop do          
+          out_stream.send Channel.receive_first(stream_1, stream_2)
+        rescue Channel::ClosedError
+          puts "#{Fiber.current.name} rescuing"
+          break
+        end
       end
     }
   end
@@ -84,8 +88,8 @@ abstract class ::Channel(T)
     }
   end
 
-  def scan(acc : U, &block : U,T -> V) : Channel(V) forall U,V
-    Channel(V).new.tap { |stream|
+  def scan(acc : U, &block : U,T -> U) : Channel(U) forall U
+    Channel(U).new.tap { |stream|
       spawn do
         self.listen { |v|
           acc = block.call(acc, v)
