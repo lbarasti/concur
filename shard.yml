@@ -4,6 +4,12 @@ version: 0.1.0
 authors:
   - lorenzo.barasti <lbarasti@users.noreply.github.com>
 
-crystal: 0.30.0
+crystal: 0.31.1
+
+dependencies: 
+  dataclass:
+    github: lbarasti/dataclass
+  tablo:
+    github: hutou/tablo
 
 license: MIT
