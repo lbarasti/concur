@@ -1,7 +1,47 @@
 require "yaml"
 require "http/client"
 require "../src/concur"
+require "dataclass"
+require "tablo"
 extend Concur
+
+abstract class StatsRequests; end;
+dataclass Failure{url : String} < StatsRequests
+dataclass Success{url : String} < StatsRequests
+dataclass Get{channel : Channel(StatsCount)} < StatsRequests
+
+dataclass StatsCount{success : Hash(String, Int32), failure : Hash(String, Int32)}
+class Stats
+  def initialize
+    # TODO: read from DB
+    @success = Hash(String, Int32).new(0)
+    @failure = Hash(String, Int32).new(0)
+    @comm = Channel(StatsRequests).new
+    spawn do
+      @comm.listen { |v|
+        case v
+        when Success
+          @success[v.url] += 1
+        when Failure
+          @failure[v.url] += 1
+        when Get
+          v.channel.send StatsCount.new(@success, @failure)
+        end
+      }
+    end
+  end
+  def increment_success(url : String)
+    @comm.send Success.new(url)
+  end
+  def increment_failure(url : String)
+    @comm.send Failure.new(url)
+  end
+  def get
+    tmp = Channel(StatsCount).new
+    @comm.send(Get.new(tmp))
+    tmp.receive
+  end
+end
 
 get_urls = -> {
   YAML.parse(
@@ -25,7 +65,25 @@ end
   end
 }
 
-successes
-failures
+stats = Stats.new
 
+merge(
+  successes.map { |result|
+    stats.increment_success result[0]
+  },
+  failures.map { |result|
+    stats.increment_failure result[0]
+  }
+).listen { |v|
+  count = stats.get
+  urls = (count.success.keys + count.failure.keys).uniq
+  data = urls.map { |url| [url, count.success[url] || 0, count.failure[url] || 0]}
+  table = Tablo::Table.new(data) do |t|
+    t.add_column("Url", width: 20) { |n| n[0] }
+    t.add_column("Success") { |n| n[1] }
+    t.add_column("Failure") { |n| n[2] }
+  end
+
+  puts table
+}
 sleep
