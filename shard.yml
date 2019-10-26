@@ -11,5 +11,8 @@ dependencies:
     github: lbarasti/dataclass
   tablo:
     github: hutou/tablo
+  crt:
+    github: maiha/crt.cr
+    version: 0.4.0
 
 license: MIT

@@ -2,6 +2,7 @@ require "yaml"
 require "http/client"
 require "../src/concur"
 require "dataclass"
+require "crt"
 require "tablo"
 extend Concur
 
@@ -37,9 +38,9 @@ class Stats
     @comm.send Failure.new(url)
   end
   def get
-    tmp = Channel(StatsCount).new
-    @comm.send(Get.new(tmp))
-    tmp.receive
+    Channel(StatsCount).new.tap { |tmp|
+      @comm.send Get.new(tmp)
+    }.receive
   end
 end
 
@@ -66,6 +67,7 @@ end
 }
 
 stats = Stats.new
+win = Crt::Window.new(24, 80)
 
 merge(
   successes.map { |result|
@@ -79,11 +81,13 @@ merge(
   urls = (count.success.keys + count.failure.keys).uniq
   data = urls.map { |url| [url, count.success[url] || 0, count.failure[url] || 0]}
   table = Tablo::Table.new(data) do |t|
-    t.add_column("Url", width: 20) { |n| n[0] }
+    t.add_column("Url", width: 28) { |n| n[0] }
     t.add_column("Success") { |n| n[1] }
     t.add_column("Failure") { |n| n[2] }
   end
 
-  puts table
+  win.clear
+  win.print(0, 0, table.to_s)
+  win.refresh
 }
 sleep
