@@ -1,14 +1,4 @@
 module Concur
-  def timer(t : Time::Span, name = nil) : Channel(Nil)
-    Channel(Nil).new.tap { |timeout|
-      spawn(name: name) do
-        sleep t
-        timeout.send nil
-        timeout.close()
-      end
-    }
-  end
-
   def source(input : Enumerable(T), name = nil) : Channel(T) forall T
     Channel(T).new.tap { |stream|
       spawn(name: name) do
@@ -24,9 +14,8 @@ module Concur
     Channel(T).new.tap { |values|
       spawn(name: name) do
         loop do
-          timeout = timer(t, name: "#{name}>timer")
           select
-          when timeout.receive
+          when timeout(t)
             values.send block.call
           when time = terminate.receive
             break

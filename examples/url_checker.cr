@@ -46,7 +46,7 @@ end
 
 get_urls = -> {
   YAML.parse(
-    File.read("./examples/url_checker.yml")
+    File.read("./url_checker.yml")
   )["urls"].as_a.map(&.as_s)
 }
 

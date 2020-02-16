@@ -2,17 +2,8 @@ name: concur
 version: 0.1.0
 
 authors:
-  - lorenzo.barasti <lbarasti@users.noreply.github.com>
+  - lbarasti <lbarasti@users.noreply.github.com>
 
-crystal: 0.31.1
-
-dependencies: 
-  dataclass:
-    github: lbarasti/dataclass
-  tablo:
-    github: hutou/tablo
-  crt:
-    github: maiha/crt.cr
-    version: 0.4.0
+crystal: 0.33.0
 
 license: MIT

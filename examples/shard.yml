@@ -1,0 +1,16 @@
+name: examples
+version: 0.1.0
+
+authors:
+  - lbarasti <lbarasti@users.noreply.github.com>
+
+dependencies: 
+  dataclass:
+    github: lbarasti/dataclass
+  tablo:
+    github: hutou/tablo
+  crt:
+    github: maiha/crt.cr
+    version: 0.4.0
+
+license: MIT
