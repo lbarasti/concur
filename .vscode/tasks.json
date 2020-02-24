@@ -8,18 +8,9 @@
             "type": "shell",
             "command": "crystal spec",
             "group": {
-                "kind": "test",
+                "kind": "build",
                 "isDefault": true
             }
-        },
-        {
-            "label": "crystal run",
-            "type": "shell",
-            "command": "crystal run ${file}",
-            "group": {
-              "kind": "build",
-              "isDefault": true
-            }
-          }
+        }
     ]
 }

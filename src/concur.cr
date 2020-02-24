@@ -10,7 +10,7 @@ module Concur
     }
   end
 
-  def every(t : Time::Span, name = nil, terminate = Channel(Time).new, debug? = false, &block : -> T) : Channel(T) forall T
+  def every(t : Time::Span, name = nil, terminate = Channel(Time).new, &block : -> T) : Channel(T) forall T
     Channel(T).new.tap { |values|
       spawn(name: name) do
         loop do
@@ -32,11 +32,13 @@ module Concur
   def flatten(in_stream : Channel(Enumerable(K)), name = nil) : Channel(K) forall K
     Channel(K).new.tap { |out_stream|
       spawn do
-        in_stream.listen { |enumerable|
-          enumerable.each { |v|
+        loop do
+          in_stream.receive.each { |v|
             out_stream.send(v)
           }
-        }
+        end
+      rescue Channel::ClosedError
+        out_stream.close
       end
     }
   end
@@ -125,6 +127,16 @@ abstract class ::Channel(T)
     rescue Channel::ClosedError
       puts "#{Fiber.current.name} rescuing"
       break
+    end
+  end
+
+  def each(name = nil, &block : T -> )
+    spawn(name: name) do
+      loop do
+        block.call(self.receive)
+      rescue Channel::ClosedError
+        break
+      end
     end
   end
 end

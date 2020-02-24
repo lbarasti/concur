@@ -42,7 +42,7 @@ describe Concur do
       fact.receive.should eq(6)
     end
     it "supports concurrent processing" do
-      fact = source(1..3).map(workers=2) { |v|
+      fact = source(1..3).map(workers: 2) { |v|
         sleep rand
         v * 2
       }
