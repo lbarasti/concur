@@ -59,8 +59,8 @@ end
 
 abstract class ::Channel(T) 
 
-  def map(workers = 1, &block : T -> V) : Channel(V) forall T,V
-    Channel(V).new.tap { |stream|
+  def map(workers = 1, buffer_size = 0, &block : T -> V) : Channel(V) forall V
+    Channel(V).new(buffer_size).tap { |stream|
       countdown = Channel(Nil).new(workers)
       workers.times { |w_i|
         spawn(name: "#{Fiber.current.name} > #{w_i}") do
@@ -79,8 +79,16 @@ abstract class ::Channel(T)
     }
   end
 
-  def scan(acc : U, &block : U,T -> U) : Channel(U) forall U
-    Channel(U).new.tap { |stream|
+  def map_with_state(initial_state : S, buffer_size = 0, &block : S, T -> V) forall S,V
+    state = initial_state
+    self.map { |t|
+      state, v = block.call(state, t)
+      v
+    }
+  end
+
+  def scan(acc : U, buffer_size = 0, &block : U,T -> U) : Channel(U) forall U
+    Channel(U).new(buffer_size).tap { |stream|
       spawn do
         self.listen { |v|
           acc = block.call(acc, v)
@@ -91,13 +99,21 @@ abstract class ::Channel(T)
     }
   end
 
-  # def zip(channel : Channel(U), name = nil) : Channel({T,U}) forall U
-  #   Channel({T,U}).new.tap { |stream|
-  #     spawn do
-  #       self.listen
-  #     end
-  #   }
-  # end
+  def zip(channel : Channel(U), name = "", buffer = 0, &block : T,U -> V) : Channel(V) forall U,V
+    Channel(V).new(buffer).tap { |stream|
+      spawn(name: name) do
+        loop do
+          p1 = self.receive
+          p2 = channel.receive
+
+          stream.send block.call(p1,p2)
+        end
+      rescue Channel::ClosedError
+        puts "#{Fiber.current.name} rescuing"
+        stream.close
+      end
+    }
+  end
 
   # TODO define a macro to return a Tuple
   def broadcast(out_ports = 2, name = nil)

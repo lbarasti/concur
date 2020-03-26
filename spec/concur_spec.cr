@@ -46,9 +46,59 @@ describe Concur do
         sleep rand
         v * 2
       }
-      3.times { fact.receive }
+      expected = [2,4,6]
+      actual = 3.times
+        .map { fact.receive }
+        .to_a
+        .sort
+      expected.should eq actual
       expect_raises(Channel::ClosedError) {
         fact.receive
+      }
+    end
+  end
+
+  describe "#map_with_state" do
+    size = 10
+    it "passes state through subsequent calls" do
+      ch = source(1..size).map_with_state(0) { |state, v|
+        {state + 1, v * v + state}
+      }
+      actual = size.times
+        .map { ch.receive }
+        .to_a
+      expected = (1..size).map{|v| v * v + v - 1}
+      actual.should eq expected
+      expect_raises(Channel::ClosedError) {
+        ch.receive
+      }
+    end
+    it "can deal with arbitrarily complex state" do
+      ch = source(1..size).map_with_state({previous: 0}) { |state, v|
+        next_value = state[:previous] + v * v
+        next_state = {previous: next_value}
+        {next_state, next_value}
+      }
+      actual = size.times
+        .map{ ch.receive }
+        .to_a
+      expected = (1..size).map { |v| (1..v).map(&.**(2)).sum }
+      actual.should eq expected
+    end
+  end
+
+  describe "#zip" do
+    size = 10
+    it "pairs values coming from different streams" do
+      a = source(1..size)
+      b = source(1..size).map(&.-)
+      ch = a.zip(b) { |a_i, b_i|
+        a_i + b_i
+      }
+      actual = size.times.map { ch.receive }.to_a
+      (1..size).map{ 0 }.to_a.should eq actual
+      expect_raises(Channel::ClosedError) {
+        ch.receive
       }
     end
   end
