@@ -1,6 +1,6 @@
 module Concur
-  def source(input : Enumerable(T), name = nil) : Channel(T) forall T
-    Channel(T).new.tap { |stream|
+  def source(input : Enumerable(T), name = nil, buffer_size = 0) : Channel(T) forall T
+    Channel(T).new(buffer_size).tap { |stream|
       spawn(name: name) do
         input.each { |value|
           stream.send value
@@ -9,9 +9,21 @@ module Concur
       end
     }
   end
+  
+  def source(initial_state : T, name = nil, buffer_size = 0, &block : T -> V) forall T, V
+    Channel(T).new(buffer_size).tap { |stream|
+      spawn(name: name) do
+        state = initial_state
+        loop do
+          state, value = block.call(state)
+          stream.send value
+        end
+      end
+    }
+  end
 
-  def every(t : Time::Span, name = nil, terminate = Channel(Time).new, &block : -> T) : Channel(T) forall T
-    Channel(T).new.tap { |values|
+  def every(t : Time::Span, name = nil, buffer_size = 0, terminate = Channel(Time).new, &block : -> T) : Channel(T) forall T
+    Channel(T).new(buffer_size).tap { |values|
       spawn(name: name) do
         loop do
           select
@@ -79,7 +91,7 @@ abstract class ::Channel(T)
     }
   end
 
-  def map_with_state(initial_state : S, buffer_size = 0, &block : S, T -> V) forall S,V
+  def map(initial_state : S, buffer_size = 0, &block : S, T -> V) forall S,V
     state = initial_state
     self.map { |t|
       state, v = block.call(state, t)

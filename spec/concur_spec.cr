@@ -30,6 +30,20 @@ describe Concur do
       s = source(cyc)
       10.times { |i| s.receive.should eq(ar[i%3]) }
     end
+
+    it "supports generator functions" do
+      size = 10
+      initial_state = rand(128)
+      s = source(initial_state) { |state|
+        {state + 1, state ** 2}
+      }
+      actual = size.times.map { s.receive }.to_a
+      expected = (initial_state..initial_state + size - 1)
+        .map {|i| i**2 }
+        .to_a
+
+      actual.should eq expected
+    end
   end
 
   describe "#map" do
@@ -58,10 +72,10 @@ describe Concur do
     end
   end
 
-  describe "#map_with_state" do
+  describe "#map" do
     size = 10
     it "passes state through subsequent calls" do
-      ch = source(1..size).map_with_state(0) { |state, v|
+      ch = source(1..size).map(0) { |state, v|
         {state + 1, v * v + state}
       }
       actual = size.times
@@ -74,7 +88,7 @@ describe Concur do
       }
     end
     it "can deal with arbitrarily complex state" do
-      ch = source(1..size).map_with_state({previous: 0}) { |state, v|
+      ch = source(1..size).map({previous: 0}) { |state, v|
         next_value = state[:previous] + v * v
         next_state = {previous: next_value}
         {next_state, next_value}
