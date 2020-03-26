@@ -71,11 +71,11 @@ end
 
 abstract class ::Channel(T) 
 
-  def map(workers = 1, buffer_size = 0, &block : T -> V) : Channel(V) forall V
+  def map(workers = 1, buffer_size = 0, name = nil, &block : T -> V) : Channel(V) forall V
     Channel(V).new(buffer_size).tap { |stream|
       countdown = Channel(Nil).new(workers)
       workers.times { |w_i|
-        spawn(name: "#{Fiber.current.name} > #{w_i}") do
+        spawn(name: name || "#{Fiber.current.name} > #{w_i}") do
           self.listen { |v|
             stream.send block.call(v)
           }
@@ -83,7 +83,7 @@ abstract class ::Channel(T)
           countdown.send(nil)
         end
       }
-      spawn(name: "#{Fiber.current.name} > countdown") do
+      spawn(name: name || "#{Fiber.current.name} > countdown") do
         workers.times { countdown.receive }
         countdown.close
         stream.close
@@ -91,17 +91,17 @@ abstract class ::Channel(T)
     }
   end
 
-  def map(initial_state : S, buffer_size = 0, &block : S, T -> V) forall S,V
+  def map(initial_state : S, buffer_size = 0, name = nil, &block : S, T -> V) forall S,V
     state = initial_state
-    self.map { |t|
+    self.map(name: name, buffer_size: buffer_size) { |t|
       state, v = block.call(state, t)
       v
     }
   end
 
-  def scan(acc : U, buffer_size = 0, &block : U,T -> U) : Channel(U) forall U
+  def scan(acc : U, buffer_size = 0, name = nil, &block : U,T -> U) : Channel(U) forall U
     Channel(U).new(buffer_size).tap { |stream|
-      spawn do
+      spawn(name: name) do
         self.listen { |v|
           acc = block.call(acc, v)
           stream.send acc
@@ -111,8 +111,8 @@ abstract class ::Channel(T)
     }
   end
 
-  def zip(channel : Channel(U), name = "", buffer = 0, &block : T,U -> V) : Channel(V) forall U,V
-    Channel(V).new(buffer).tap { |stream|
+  def zip(channel : Channel(U), name = nil, buffer_size = 0, &block : T,U -> V) : Channel(V) forall U,V
+    Channel(V).new(buffer_size).tap { |stream|
       spawn(name: name) do
         loop do
           p1 = self.receive
