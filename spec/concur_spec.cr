@@ -35,11 +35,11 @@ describe Concur do
       size = 10
       initial_state = rand(128)
       s = source(initial_state) { |state|
-        {state + 1, state ** 2}
+        {state + 1, "#{state ** 2}"}
       }
       actual = size.times.map { s.receive }.to_a
       expected = (initial_state..initial_state + size - 1)
-        .map {|i| i**2 }
+        .map(&.**(2).to_s)
         .to_a
 
       actual.should eq expected

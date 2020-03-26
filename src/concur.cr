@@ -10,8 +10,8 @@ module Concur
     }
   end
   
-  def source(initial_state : T, name = nil, buffer_size = 0, &block : T -> V) forall T, V
-    Channel(T).new(buffer_size).tap { |stream|
+  def source(initial_state : S, name = nil, buffer_size = 0, &block : S -> {S, V}) forall S, V
+    Channel(V).new(buffer_size).tap { |stream|
       spawn(name: name) do
         state = initial_state
         loop do
