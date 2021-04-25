@@ -7,6 +7,10 @@ authors:
 dependencies: 
   dataclass:
     github: lbarasti/dataclass
+  agent:
+    github: lbarasti/agent
+  rate_limiter:
+    github: lbarasti/rate_limiter
   tablo:
     github: hutou/tablo
   crt:

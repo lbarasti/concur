@@ -1,6 +1,6 @@
 # concur
 
-TODO: Write a description here
+A collection of primitives for event-driven programming.
 
 ## Installation
 

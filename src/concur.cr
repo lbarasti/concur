@@ -1,3 +1,5 @@
+require "rate_limiter"
+
 module Concur
   def source(input : Enumerable(T), name = nil, buffer_size = 0) : Channel(T) forall T
     Channel(T).new(buffer_size).tap { |stream|
@@ -54,23 +56,42 @@ module Concur
       end
     }
   end
+end
 
-  def merge(stream_1 : Channel(K), stream_2 : Channel(J), name = nil) : Channel(K | J) forall K,J
-    Channel(K | J).new.tap { |out_stream|
+abstract class ::Channel(T)
+
+  # Pipes values from two channels into a single one.
+  # Note. If both channels have values ready to be received, then one will be selected at random. 
+  def merge(channel : Channel(J), name = nil) : Channel(T | J) forall J
+    channels = [self, channel]
+    Channel(T | J).new.tap { |out_stream|
       spawn do
         loop do          
-          out_stream.send Channel.receive_first(stream_1, stream_2)
+          out_stream.send Channel.receive_first(channels.shuffle) # shuffle to increase fairness
         rescue Channel::ClosedError
-          puts "#{Fiber.current.name} rescuing"
-          break
+          channels.reject!(&.closed?)
+          break if channels.empty?
         end
+        out_stream.close
       end
     }
   end
-end
 
-abstract class ::Channel(T) 
+  def rate_limit(items_per_sec : Float64, max_burst : Int32)
+    rl = RateLimiter.new(rate: items_per_sec, max_burst: max_burst)
 
+    Channel(T).new.tap { |stream|
+      spawn do
+        loop do
+          rl.get
+          stream.send self.receive
+        end
+      rescue Channel::ClosedError
+        stream.close
+      end
+    }
+  end
+  
   def map(workers = 1, buffer_size = 0, name = nil, &block : T -> V) : Channel(V) forall V
     Channel(V).new(buffer_size).tap { |stream|
       countdown = Channel(Nil).new(workers)
@@ -139,12 +160,64 @@ abstract class ::Channel(T)
     }
   end
 
+  def select(name = nil, &predicate : T -> Bool) : Channel(T)
+    Channel(T).new.tap { |selected|
+      spawn(name: name) do
+        loop do
+          v = self.receive
+          predicate.call(v) ? selected.send(v) : nil
+        end
+      rescue Channel::ClosedError
+        selected.close
+      end
+    }
+  end
+
+  def reject(name = nil, &predicate : T -> Bool) : Channel(T)
+    self.select(name: name) { |v|
+      !predicate.call(v)
+    }
+  end
+
   def partition(&predicate : T -> Bool) : {Channel(T), Channel(T)}
     {Channel(T).new, Channel(T).new}.tap { |pass, fail|
       spawn do
         self.listen { |v|
           predicate.call(v) ? (pass.send(v)) : (fail.send(v))
         }
+      end
+    }
+  end
+
+  # Sends batches of messages either every `size` messages received or every `interval`,
+  # if a batch has not been sent within the last `interval`.
+  def batch(size : Int32, interval : Time::Span, name = nil) : Channel(Enumerable(T))
+    # TODO: assert on `size` and `interval`
+    Channel(Enumerable(T)).new.tap { |out_stream|
+      memory = Array(T).new(size)
+      tick = every(interval) { nil }
+      sent = false
+      spawn(name: name) do
+        loop do
+          select
+          when v = self.receive
+            memory << v
+            if memory.size >= size
+              out_stream.send(memory.dup)
+              memory.clear
+              sent = true
+            end
+          when tick.receive
+            unless sent
+              out_stream.send(memory.dup)
+              memory.clear
+            end
+            sent = false
+          end
+        end
+      rescue Channel::ClosedError
+        out_stream.send(memory.dup)
+        out_stream.close
       end
     }
   end

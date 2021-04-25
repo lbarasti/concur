@@ -1,14 +1,22 @@
-version: 1.0
+version: 2.0
 shards:
+  agent:
+    git: https://github.com/lbarasti/agent.git
+    version: 0.1.1
+
   crt:
-    github: maiha/crt.cr
+    git: https://github.com/maiha/crt.cr.git
     version: 0.4.0
 
   dataclass:
-    github: lbarasti/dataclass
-    version: 1.1.0
+    git: https://github.com/lbarasti/dataclass.git
+    version: 1.1.1
+
+  rate_limiter:
+    git: https://github.com/lbarasti/rate_limiter.git
+    version: 1.0.1
 
   tablo:
-    github: hutou/tablo
-    version: 0.9.3
+    git: https://github.com/hutou/tablo.git
+    version: 0.9.5
 

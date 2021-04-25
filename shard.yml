@@ -4,6 +4,10 @@ version: 0.1.0
 authors:
   - lbarasti <lbarasti@users.noreply.github.com>
 
-crystal: 0.33.0
+crystal: 1.0.0
+
+dependencies:
+  rate_limiter:
+    github: lbarasti/rate_limiter
 
 license: MIT

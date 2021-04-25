@@ -117,6 +117,54 @@ describe Concur do
     end
   end
 
+  describe "#merge" do
+    size = 10
+    it "pipes values coming from different streams into a single one" do
+      a = source(1..size)
+      b = source(1..size).map(&.-)
+      ch = a.merge(b).scan(0) { |sum, b| sum + b }
+      (size * 2 - 1).times { ch.receive }
+      ch.receive.should eq 0
+    end
+
+    it "will continue receiving values after one of the upstream channels has closed" do
+      a = source(1..size * 2)
+      b = source(1..size)
+      ch = a.merge(b)
+      (size * 3).times { ch.receive }
+    end
+
+    it "will close the downstream channel once both sources have been exhausted" do
+      a = source(1..size)
+      b = source(1..size)
+      ch = a.merge(b)
+      (size * 2).times { ch.receive }
+      expect_raises(Channel::ClosedError) {
+        ch.receive
+      }
+    end
+  end
+
+  describe "#select" do
+    size = 10
+    it "filters values based on a predicate" do
+      expected = [1.0, 3.0, 5.0, 7.0, 9.0]
+
+      take(source(1..size).select(&.odd?), 5)
+        .should eq expected
+    end
+  end
+
+  describe "#reject" do
+    size = 10
+    it "rejects values based on a predicate" do
+      expected = [2.0, 4.0, 6.0, 8.0]
+
+      take(source(1...size).reject(&.odd?), 4)
+        .should eq expected
+    end
+  end
+
   describe "#scan" do
     it "returns the accumulated values" do
       fact = source(1..4).scan(1) { |acc, v|
@@ -149,6 +197,22 @@ describe Concur do
           ch.receive
         }
       }
+    end
+  end
+
+  describe "#rate_limit" do
+    it "emits elements with the given rate" do
+      max_burst = 2
+      a = source(1..4)
+        .rate_limit(items_per_sec: 1, max_burst: max_burst)
+      start_time = Time.utc
+      
+      max_burst.times { a.receive }
+      assert_elapsed start_time, 0.0
+      a.receive
+      assert_elapsed start_time, 1.0
+      a.receive
+      assert_elapsed start_time, 2.0
     end
   end
 end
