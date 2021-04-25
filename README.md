@@ -1,3 +1,8 @@
+![GitHub release](https://img.shields.io/github/release/lbarasti/concur.svg)
+![Build Status](https://github.com/lbarasti/concur/workflows/spec_and_docs/badge.svg)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Docs](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://lbarasti.github.io/concur)
+
 # concur
 
 A collection of primitives for event-driven programming.
