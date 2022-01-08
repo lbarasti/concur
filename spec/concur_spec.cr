@@ -222,6 +222,24 @@ describe Concur do
     end
   end
 
+  describe "#take" do
+    it "can deal with the calling channel closing" do
+      source(1..5)
+        .map { |i| i + 1 }
+        .select(&.odd?)
+        .take(10)
+        .should eq [3, 5]
+    end
+
+    it "can read a finite number of elements from a never ending stream" do
+      source((1..5).cycle)
+        .map { |i| i + 1 }
+        .select(&.odd?)
+        .take(5)
+        .should eq [3, 5, 3, 5, 3]
+    end
+  end
+
   describe "#broadcast" do
     it "emits elements from its input port to all of its output ports" do
       a, b, c = source(1..4).broadcast(3)
@@ -231,6 +249,17 @@ describe Concur do
         c.receive.should eq(v)
       }
       [a,b,c].each { |ch|
+        expect_raises(Channel::ClosedError) {
+          ch.receive
+        }
+      }
+    end
+
+    it "shuts down the broadcast if any receiving stream is closed" do
+      a, b, c = source(1..4).broadcast(3)
+      b.close
+      a.receive # runs fine, because values are sent to channels in order
+      [a, b, c].each { |ch|
         expect_raises(Channel::ClosedError) {
           ch.receive
         }
