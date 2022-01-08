@@ -68,10 +68,10 @@ module Concur
   # Returns a channel that will receive each element of the enumerables received by
   # *in_stream*, one at a time.
   #
-  # If *in_stream* is closed, then the returned stream will also be closed.
+  # If *in_stream* is closed, then the returned stream will also be closed once *in_stream* has been emptied.
   def flatten(in_stream : Channel(Enumerable(K)), name = nil, buffer_size = 0) : Channel(K) forall K
     Channel(K).new(buffer_size).tap { |stream|
-      spawn do
+      spawn(name: name) do
         loop do
           in_stream.receive.each { |v|
             stream.send(v)
@@ -86,28 +86,40 @@ end
 
 abstract class ::Channel(T)
 
-  # Pipes values from two channels into a single one.
+  # Returns a channel that receives values from both *self* and *other*, as soon as they are available.
+  #
+  # The returned channel is closed as soon as both the input channels are closed and empty - but will
+  # continue to operate while at least one of them is open.
+  #
   # Note. If both channels have values ready to be received, then one will be selected at random. 
-  def merge(channel : Channel(J), name = nil) : Channel(T | J) forall J
-    channels = [self, channel]
-    Channel(T | J).new.tap { |out_stream|
-      spawn do
-        loop do          
-          out_stream.send Channel.receive_first(channels.shuffle) # shuffle to increase fairness
+  def merge(other : Channel(J), name = nil, buffer_size = 0) : Channel(T | J) forall J
+    channels = [self, other]
+    Channel(T | J).new(buffer_size).tap { |stream|
+      spawn(name: name) do
+        loop do
+          stream.send Channel.receive_first(channels.shuffle) # shuffle to increase fairness
         rescue Channel::ClosedError
           channels.reject!(&.closed?)
           break if channels.empty?
         end
-        out_stream.close
+        stream.close
       end
     }
   end
 
-  def rate_limit(items_per_sec : Float64, max_burst : Int32)
+  # Returns a channel that receives at most *items_per_sec* items per second from the
+  # caller - or *max_burst* items, if no elements were received in a while.
+  #
+  # The returned channel is closed once `self` is closed and empty and a new value
+  # can be received, based on the rate limiting parameters.
+  #
+  # Refer to the documentation of [RateLimiter](https://github.com/lbarasti/rate_limiter)
+  # for more details.
+  def rate_limit(items_per_sec : Float64, max_burst : Int32 = 1, name = nil, buffer_size = 0)
     rl = RateLimiter.new(rate: items_per_sec, max_burst: max_burst)
 
-    Channel(T).new.tap { |stream|
-      spawn do
+    Channel(T).new(buffer_size).tap { |stream|
+      spawn(name: name) do
         loop do
           rl.get
           stream.send self.receive
@@ -117,12 +129,25 @@ abstract class ::Channel(T)
       end
     }
   end
-  
-  def map(workers = 1, buffer_size = 0, name = nil, &block : T -> V) : Channel(V) forall V
+
+  # Returns a channel that receives values from `self` transformed via *block*.
+  #
+  # A *workers* parameter can be supplied to make the computation of the block concurrent.
+  # Note that, for *workers* > 1, no order guarantees are made.
+  #
+  # The returned channel will close once `self` is closed and empty, and all
+  # the outstanding runs of `block` are completed.
+  #
+  # Example:
+  # ```
+  # source([1,2,3])
+  #   .map(workers: 2) { |v| sleep rand; v**2 } # => [4, 1, 9]
+  # ```
+  def map(workers = 1, name = nil, buffer_size = 0, &block : T -> V) : Channel(V) forall V
     Channel(V).new(buffer_size).tap { |stream|
       countdown = Channel(Nil).new(workers)
       workers.times { |w_i|
-        spawn(name: name || "#{Fiber.current.name} > #{w_i}") do
+        spawn(name: name.try { |s| "#{s}.#{w_i}" }) do
           self.listen { |v|
             stream.send block.call(v)
           }
@@ -130,7 +155,7 @@ abstract class ::Channel(T)
           countdown.send(nil)
         end
       }
-      spawn(name: name || "#{Fiber.current.name} > countdown") do
+      spawn(name: name.try { |s| "#{s}.countdown" }) do
         workers.times { countdown.receive }
         countdown.close
         stream.close
@@ -138,7 +163,7 @@ abstract class ::Channel(T)
     }
   end
 
-  def flat_map(workers = 1, buffer_size = 0, name = nil, &block : T -> Enumerable(V)) : Channel(V) forall V
+  def flat_map(workers = 1, name = nil, buffer_size = 0, &block : T -> Enumerable(V)) : Channel(V) forall V
     enum_stream = map(
       workers: workers, name: name.try{ |s| "#{s}.map" }, &block)
     flatten(enum_stream, buffer_size: buffer_size, name: name)
