@@ -1,10 +1,10 @@
 name: concur
-version: 0.1.0
+version: 0.2.0
 
 authors:
   - lbarasti <lbarasti@users.noreply.github.com>
 
-crystal: 1.0.0
+crystal: ">=1.0.0"
 
 dependencies:
   rate_limiter:

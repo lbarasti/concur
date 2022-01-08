@@ -1,5 +1,5 @@
 require "spec"
-require "../src/concur"
+require "../src/**"
 extend Concur
 
 Spec.override_default_formatter(Spec::VerboseFormatter.new)
@@ -11,3 +11,5 @@ end
 def take(stream, n)
   (1..n).map { stream.receive }
 end
+
+class CustomError < Exception; end
