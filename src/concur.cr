@@ -43,8 +43,8 @@ module Concur
     }
   end
 
-  def flatten(in_stream : Channel(Enumerable(K)), name = nil) : Channel(K) forall K
-    Channel(K).new.tap { |out_stream|
+  def flatten(in_stream : Channel(Enumerable(K)), name = nil, buffer_size = 0) : Channel(K) forall K
+    Channel(K).new(buffer_size).tap { |out_stream|
       spawn do
         loop do
           in_stream.receive.each { |v|
@@ -110,6 +110,12 @@ abstract class ::Channel(T)
         stream.close
       end
     }
+  end
+
+  def flat_map(workers = 1, buffer_size = 0, name = nil, &block : T -> Enumerable(V)) : Channel(V) forall V
+    enum_stream = map(
+      workers: workers, name: name.try{ |s| "#{s}.map" }, &block)
+    flatten(enum_stream, buffer_size: buffer_size, name: name)
   end
 
   def map(initial_state : S, buffer_size = 0, name = nil, &block : S, T -> V) forall S,V

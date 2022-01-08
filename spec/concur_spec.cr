@@ -46,7 +46,7 @@ describe Concur do
     end
   end
 
-  describe "#map" do
+  describe "#map/0" do
     it "applies a function to each value" do
       fact = source(1..3).map { |v|
         v * 2
@@ -72,7 +72,7 @@ describe Concur do
     end
   end
 
-  describe "#map" do
+  describe "#map/1" do
     size = 10
     it "passes state through subsequent calls" do
       ch = source(1..size).map(0) { |state, v|
@@ -113,6 +113,44 @@ describe Concur do
       (1..size).map{ 0 }.to_a.should eq actual
       expect_raises(Channel::ClosedError) {
         ch.receive
+      }
+    end
+  end
+
+  describe "Concur.flatten" do
+    it "reduces one level of Channel nesting" do
+      enumerable = [[1, 2, 3], [4]]
+      a = flatten(source(enumerable))
+
+      actual = 4.times.map { a.receive }.to_a
+      actual.should eq (1..4).to_a
+      expect_raises(Channel::ClosedError) {
+        a.receive
+      }
+    end
+  end
+
+  describe "#flat_map" do
+    it "is equivalent to flatten(identity)" do
+      enumerable = [[1, 2, 3], [4]]
+      a = source(enumerable).flat_map { |a| a }
+
+      actual = 4.times.map { a.receive }.to_a
+      actual.should eq (1..4).to_a
+      expect_raises(Channel::ClosedError) {
+        a.receive
+      }
+    end
+
+    it "applies a function returning an enumerable and emits individual elements" do
+      size = 10
+      a = source(1...size)
+        .flat_map { |v| [v, v + 1] }
+
+      actual = (1...2*size - 1).map { a.receive }.to_a
+      actual.should eq (1..size).each_cons(2).flatten.to_a
+      expect_raises(Channel::ClosedError) {
+        a.receive
       }
     end
   end
