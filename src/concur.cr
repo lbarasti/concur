@@ -136,7 +136,9 @@ abstract class ::Channel(T)
   # Note that, for *workers* > 1, no order guarantees are made.
   #
   # The returned channel will close once `self` is closed and empty, and all
-  # the outstanding runs of `block` are completed.
+  # the outstanding runs of *block* are completed.
+  #
+  # TODO. Document exception handling strategy.
   #
   # Example:
   # ```
@@ -163,13 +165,34 @@ abstract class ::Channel(T)
     }
   end
 
+  # Returns a channel that receives each value of the enumerables produced
+  # applying *block* to values received by `self`.
+  #
+  # A *workers* parameter can be supplied to make the computation of the block concurrent.
+  # Note that, for *workers* > 1, no order guarantees are made - see `#map` for an example.
+  #
+  # The returned channel is closed once `self` is closed and empty, and all
+  # the outstanding runs of *block* are completed.
+  #
+  # See `#map` for details on the exception handling strategy.
   def flat_map(workers = 1, name = nil, buffer_size = 0, &block : T -> Enumerable(V)) : Channel(V) forall V
     enum_stream = map(
       workers: workers, name: name.try{ |s| "#{s}.map" }, &block)
     flatten(enum_stream, buffer_size: buffer_size, name: name)
   end
 
-  def map(initial_state : S, buffer_size = 0, name = nil, &block : S, T -> V) forall S,V
+  # Returns a channel that receives values from `self` transformed via *block* and based
+  # on the provided *initial_state*.
+  #
+  # Note. *block* is a function that takes the current state and a value received
+  # from `self` and returns a tuple composed of the next state to be passed to the block
+  # and the next value to be received by the returned channel.
+  #
+  # The returned channel is closed once `self` is closed and empty, and any outstanding
+  # run of *block* is completed.
+  #
+  # See `#map` for details on the exception handling strategy.
+  def map(initial_state : S, name = nil, buffer_size = 0, &block : S, T -> {S, V}) forall S,V
     state = initial_state
     self.map(name: name, buffer_size: buffer_size) { |t|
       state, v = block.call(state, t)
@@ -177,68 +200,105 @@ abstract class ::Channel(T)
     }
   end
 
-  def scan(acc : U, buffer_size = 0, name = nil, &block : U,T -> U) : Channel(U) forall U
-    Channel(U).new(buffer_size).tap { |stream|
-      spawn(name: name) do
-        self.listen { |v|
-          acc = block.call(acc, v)
-          stream.send acc
-        }
-        stream.close()
-      end
+  # Returns a channel that receives each successive accumulated state produced by *block*,
+  # based on the initial state *acc* and on the values received by `self`.
+  #
+  # The returned channel is closed once `self` is closed and empty, and any outstanding
+  # run of *block* is completed.
+  #
+  # See `#map` for details on the exception handling strategy.
+  def scan(acc : U, name = nil, buffer_size = 0, &block : U, T -> U) : Channel(U) forall U
+    map(acc, name: name, buffer_size: buffer_size) { |state, v|
+      res = block.call(state, v)
+      {res, res}
     }
   end
 
-  def zip(channel : Channel(U), name = nil, buffer_size = 0, &block : T,U -> V) : Channel(V) forall U,V
+  # Returns a channel that receives tuples of values coming from `self` and *other*
+  # transformed via *block*.
+  #
+  # The returned channel is closed once either `self` or `other` are closed and empty,
+  # and any outstanding run of *block* is completed.
+  #
+  # See `#map` for details on the exception handling strategy.
+  def zip(other : Channel(U), name = nil, buffer_size = 0, &block : T, U -> V) : Channel(V) forall U,V
     Channel(V).new(buffer_size).tap { |stream|
       spawn(name: name) do
         loop do
           p1 = self.receive
-          p2 = channel.receive
+          p2 = other.receive
 
           stream.send block.call(p1,p2)
         end
       rescue Channel::ClosedError
-        puts "#{Fiber.current.name} rescuing"
         stream.close
       end
     }
   end
 
-  # TODO define a macro to return a Tuple
-  def broadcast(out_ports = 2, name = nil)
-    out_ports.times.map { Channel(T).new }.to_a.tap { |streams|
-      spawn(name: name) do
-        self.listen { |v|
-          streams.each(&.send(v))
-        }
-        streams.each(&.close())
-      end
-    }
+  # Returns an array of *out_ports* channels which receive each value
+  # received by `self`.
+  #
+  # The returned channels will close once `self` is closed and empty.
+  #
+  # TODO. Document what happens if one of the returned channel is closed.
+  #
+  # Note. The rate at which values are received by each channel is limited
+  # by the slowest consumer.
+  def broadcast(out_ports = 2, name = nil, buffer_size = 0) : Array(Channel(T))
+    out_ports.times
+      .map { Channel(T).new(buffer_size) }
+      .to_a
+      .tap { |streams|
+        spawn(name: name) do
+          self.listen { |v|
+            streams.each(&.send(v))
+          }
+          streams.each(&.close)
+        end
+      }
   end
 
-  def select(name = nil, &predicate : T -> Bool) : Channel(T)
-    Channel(T).new.tap { |selected|
+  # Returns a channel which receives values received by `self`
+  # that satisfy the given *predicate*.
+  #
+  # The returned channels will close once `self` is closed and empty.
+  #
+  # TODO. Document what happens if the predicate throws an exception
+  def select(name = nil, buffer_size = 0, &predicate : T -> Bool) : Channel(T)
+    Channel(T).new(buffer_size).tap { |stream|
       spawn(name: name) do
         loop do
           v = self.receive
-          predicate.call(v) ? selected.send(v) : nil
+          predicate.call(v) ? stream.send(v) : nil
         end
       rescue Channel::ClosedError
-        selected.close
+        stream.close
       end
     }
   end
 
-  def reject(name = nil, &predicate : T -> Bool) : Channel(T)
-    self.select(name: name) { |v|
+  # Returns a channel which receives values received by `self`
+  # that do **not** satisfy the given *predicate*.
+  #
+  # The returned channels will close once `self` is closed and empty.
+  #
+  # See `#select` for details on the exception handling strategy.
+  def reject(name = nil, buffer_size = 0, &predicate : T -> Bool) : Channel(T)
+    self.select(name: name, buffer_size: buffer_size) { |v|
       !predicate.call(v)
     }
   end
 
-  def partition(&predicate : T -> Bool) : {Channel(T), Channel(T)}
-    {Channel(T).new, Channel(T).new}.tap { |pass, fail|
-      spawn do
+  # Returns a tuple of two channels, one receiving values that satisfy
+  # the given *predicate* and one receiving the remaining ones.
+  #
+  # The returned channels will close once `self` is closed and empty.
+  #
+  # See `#select` for details on the exception handling strategy.
+  def partition(name = nil, buffer_size = 0, &predicate : T -> Bool) : {Channel(T), Channel(T)}
+    {Channel(T).new(buffer_size), Channel(T).new(buffer_size)}.tap { |pass, fail|
+      spawn(name: name) do
         self.listen { |v|
           predicate.call(v) ? (pass.send(v)) : (fail.send(v))
         }
@@ -246,11 +306,12 @@ abstract class ::Channel(T)
     }
   end
 
-  # Sends batches of messages either every `size` messages received or every `interval`,
-  # if a batch has not been sent within the last `interval`.
-  def batch(size : Int32, interval : Time::Span, name = nil) : Channel(Enumerable(T))
-    # TODO: assert on `size` and `interval`
-    Channel(Enumerable(T)).new.tap { |out_stream|
+  # Returns a channel that receives values in batches either every *size* values
+  # received or every *interval*, if a batch has not been sent within the last *interval*.
+  #
+  # The returned channels will close once `self` is closed and empty.
+  def batch(size : Int32, interval : Time::Span, name = nil, buffer_size = 0) : Channel(Enumerable(T))
+    Channel(Enumerable(T)).new(buffer_size).tap { |stream|
       memory = Array(T).new(size)
       tick = every(interval) { nil }
       sent = false
@@ -260,35 +321,48 @@ abstract class ::Channel(T)
           when v = self.receive
             memory << v
             if memory.size >= size
-              out_stream.send(memory.dup)
+              stream.send(memory.dup)
               memory.clear
               sent = true
             end
           when tick.receive
             unless sent
-              out_stream.send(memory.dup)
+              stream.send(memory.dup)
               memory.clear
             end
             sent = false
           end
         end
       rescue Channel::ClosedError
-        out_stream.send(memory.dup)
-        out_stream.close
+        stream.send(memory.dup)
+        stream.close
       end
     }
   end
 
-  def listen(&block : T ->)
+  # Receives values from `self` and processes them via *block*.
+  #
+  # If no exceptions are raised while evaluating *block*, then the
+  # statement returns once `self` is closed and empty.
+  #
+  # TODO. Document what happens on exception raised.
+  #
+  # Note. This method runs on the current fiber.
+  def listen(&block : T -> _)
     loop do
       block.call(self.receive)
     rescue Channel::ClosedError
-      puts "#{Fiber.current.name} rescuing"
       break
     end
   end
 
-  def each(name = nil, &block : T -> )
+  # Runs the given *block* for each value received from `self`.
+  # The execution of the block takes place on a separate fiber.
+  #
+  # The fiber running the block will stop once `self` is closed and empty.
+  #
+  # TODO. Document what happens on exception raised.
+  def each(name = nil, &block : T -> _)
     spawn(name: name) do
       loop do
         block.call(self.receive)
