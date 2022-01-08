@@ -147,7 +147,7 @@ will be indistinguishable from a closed channel.</p>
   </h2>
   
     
-      <a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/concur.cr#L61" target="_blank">
+      <a href="https://github.com/lbarasti/concur/blob/489178bd446571b052db31b623287ba7206d2444/src/concur.cr#L87" target="_blank">
         concur.cr
       </a>
     
@@ -173,73 +173,100 @@ will be indistinguishable from a closed channel.</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#batch%28size%3AInt32%2Cinterval%3ATime%3A%3ASpan%2Cname%3Dnil%29%3AChannel%28Enumerable%28T%29%29-instance-method" class="signature"><strong>#batch</strong>(size : Int32, interval : Time::Span, name = <span class="n">nil</span>) : Channel(Enumerable(T))</a>
+        <a href="#batch%28size%3AInt32%2Cinterval%3ATime%3A%3ASpan%2Cname%3Dnil%2Cbuffer_size%3D0%29%3AChannel%28Enumerable%28T%29%29-instance-method" class="signature"><strong>#batch</strong>(size : Int32, interval : Time::Span, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>) : Channel(Enumerable(T))</a>
         
-          <div class="summary"><p>Sends batches of messages either every <code>size</code> messages received or every <code>interval</code>, if a batch has not been sent within the last <code>interval</code>.</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#broadcast%28out_ports%3D2%2Cname%3Dnil%29-instance-method" class="signature"><strong>#broadcast</strong>(out_ports = <span class="n">2</span>, name = <span class="n">nil</span>)</a>
-        
-          <div class="summary"><p><span class="flag orange">TODO</span>  define a macro to return a Tuple</p></div>
+          <div class="summary"><p>Returns a channel that receives values in batches either every <em>size</em> values received or every <em>interval</em>, if a batch has not been sent within the last <em>interval</em>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#each%28name%3Dnil%2C%26block%3AT-%3E%29-instance-method" class="signature"><strong>#each</strong>(name = <span class="n">nil</span>, &block : T -> )</a>
+        <a href="#broadcast%28out_ports%3D2%2Cname%3Dnil%2Cbuffer_size%3D0%29%3AArray%28Channel%28T%29%29-instance-method" class="signature"><strong>#broadcast</strong>(out_ports = <span class="n">2</span>, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>) : Array(Channel(T))</a>
+        
+          <div class="summary"><p>Returns an array of <em>out_ports</em> channels which receive each value received by <code>self</code>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#listen%28%26block%3AT-%3E%29-instance-method" class="signature"><strong>#listen</strong>(&block : T -> )</a>
+        <a href="#each%28name%3Dnil%2C%26block%3AT-%3E_%29-instance-method" class="signature"><strong>#each</strong>(name = <span class="n">nil</span>, &block : T -> _)</a>
+        
+          <div class="summary"><p>Runs the given <em>block</em> for each value received from <code>self</code>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#map%28initial_state%3AS%2Cbuffer_size%3D0%2Cname%3Dnil%2C%26block%3AS%2CT-%3EV%29forallS%2CV-instance-method" class="signature"><strong>#map</strong>(initial_state : S, buffer_size = <span class="n">0</span>, name = <span class="n">nil</span>, &block : S, T -> V) forall S, V</a>
+        <a href="#flat_map%28workers%3D1%2Cname%3Dnil%2Cbuffer_size%3D0%2C%26block%3AT-%3EEnumerable%28V%29%29%3AChannel%28V%29forallV-instance-method" class="signature"><strong>#flat_map</strong>(workers = <span class="n">1</span>, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &block : T -> Enumerable(V)) : Channel(V) forall V</a>
+        
+          <div class="summary"><p>Returns a channel that receives each value of the enumerables produced applying <em>block</em> to values received by <code>self</code>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#map%28workers%3D1%2Cbuffer_size%3D0%2Cname%3Dnil%2C%26block%3AT-%3EV%29%3AChannel%28V%29forallV-instance-method" class="signature"><strong>#map</strong>(workers = <span class="n">1</span>, buffer_size = <span class="n">0</span>, name = <span class="n">nil</span>, &block : T -> V) : Channel(V) forall V</a>
+        <a href="#listen%28%26block%3AT-%3E_%29-instance-method" class="signature"><strong>#listen</strong>(&block : T -> _)</a>
+        
+          <div class="summary"><p>Receives values from <code>self</code> and processes them via <em>block</em>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#merge%28channel%3AChannel%28J%29%2Cname%3Dnil%29%3AChannel%28T%7CJ%29forallJ-instance-method" class="signature"><strong>#merge</strong>(channel : Channel(J), name = <span class="n">nil</span>) : Channel(T | J) forall J</a>
+        <a href="#map%28initial_state%3AS%2Cname%3Dnil%2Cbuffer_size%3D0%2C%26block%3AS%2CT-%3ETuple%28S%2CV%29%29forallS%2CV-instance-method" class="signature"><strong>#map</strong>(initial_state : S, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &block : S, T -> Tuple(S, V)) forall S, V</a>
         
-          <div class="summary"><p>Pipes values from two channels into a single one.</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#partition%28%26predicate%3AT-%3EBool%29%3ATuple%28Channel%28T%29%2CChannel%28T%29%29-instance-method" class="signature"><strong>#partition</strong>(&predicate : T -> Bool) : Tuple(Channel(T), Channel(T))</a>
+          <div class="summary"><p>Returns a channel that receives values from <code>self</code> transformed via <em>block</em> and based on the provided <em>initial_state</em>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#rate_limit%28items_per_sec%3AFloat64%2Cmax_burst%3AInt32%29-instance-method" class="signature"><strong>#rate_limit</strong>(items_per_sec : Float64, max_burst : Int32)</a>
+        <a href="#map%28workers%3D1%2Cname%3Dnil%2Cbuffer_size%3D0%2C%26block%3AT-%3EV%29%3AChannel%28V%29forallV-instance-method" class="signature"><strong>#map</strong>(workers = <span class="n">1</span>, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &block : T -> V) : Channel(V) forall V</a>
+        
+          <div class="summary"><p>Returns a channel that receives values from <code>self</code> transformed via <em>block</em>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#reject%28name%3Dnil%2C%26predicate%3AT-%3EBool%29%3AChannel%28T%29-instance-method" class="signature"><strong>#reject</strong>(name = <span class="n">nil</span>, &predicate : T -> Bool) : Channel(T)</a>
+        <a href="#merge%28other%3AChannel%28J%29%2Cname%3Dnil%2Cbuffer_size%3D0%29%3AChannel%28T%7CJ%29forallJ-instance-method" class="signature"><strong>#merge</strong>(other : Channel(J), name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>) : Channel(T | J) forall J</a>
+        
+          <div class="summary"><p>Returns a channel that receives values from both <em>self</em> and <em>other</em>, as soon as they are available.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#scan%28acc%3AU%2Cbuffer_size%3D0%2Cname%3Dnil%2C%26block%3AU%2CT-%3EU%29%3AChannel%28U%29forallU-instance-method" class="signature"><strong>#scan</strong>(acc : U, buffer_size = <span class="n">0</span>, name = <span class="n">nil</span>, &block : U, T -> U) : Channel(U) forall U</a>
+        <a href="#partition%28name%3Dnil%2Cbuffer_size%3D0%2C%26predicate%3AT-%3EBool%29%3ATuple%28Channel%28T%29%2CChannel%28T%29%29-instance-method" class="signature"><strong>#partition</strong>(name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &predicate : T -> Bool) : Tuple(Channel(T), Channel(T))</a>
+        
+          <div class="summary"><p>Returns a tuple of two channels, one receiving values that satisfy the given <em>predicate</em> and one receiving the remaining ones.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#select%28name%3Dnil%2C%26predicate%3AT-%3EBool%29%3AChannel%28T%29-instance-method" class="signature"><strong>#select</strong>(name = <span class="n">nil</span>, &predicate : T -> Bool) : Channel(T)</a>
+        <a href="#rate_limit%28items_per_sec%3AFloat64%2Cmax_burst%3AInt32%3D1%2Cname%3Dnil%2Cbuffer_size%3D0%29-instance-method" class="signature"><strong>#rate_limit</strong>(items_per_sec : Float64, max_burst : Int32 = <span class="n">1</span>, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>)</a>
+        
+          <div class="summary"><p>Returns a channel that receives at most <em>items_per_sec</em> items per second from the caller - or <em>max_burst</em> items, if no elements were received in a while.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#zip%28channel%3AChannel%28U%29%2Cname%3Dnil%2Cbuffer_size%3D0%2C%26block%3AT%2CU-%3EV%29%3AChannel%28V%29forallU%2CV-instance-method" class="signature"><strong>#zip</strong>(channel : Channel(U), name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &block : T, U -> V) : Channel(V) forall U, V</a>
+        <a href="#reject%28name%3Dnil%2Cbuffer_size%3D0%2C%26predicate%3AT-%3EBool%29%3AChannel%28T%29-instance-method" class="signature"><strong>#reject</strong>(name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &predicate : T -> Bool) : Channel(T)</a>
+        
+          <div class="summary"><p>Returns a channel which receives values received by <code>self</code> that do <strong>not</strong> satisfy the given <em>predicate</em>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#scan%28acc%3AU%2Cname%3Dnil%2Cbuffer_size%3D0%2C%26block%3AU%2CT-%3EU%29%3AChannel%28U%29forallU-instance-method" class="signature"><strong>#scan</strong>(acc : U, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &block : U, T -> U) : Channel(U) forall U</a>
+        
+          <div class="summary"><p>Returns a channel that receives each successive accumulated state produced by <em>block</em>, based on the initial state <em>acc</em> and on the values received by <code>self</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#select%28name%3Dnil%2Cbuffer_size%3D0%2C%26predicate%3AT-%3EBool%29%3AChannel%28T%29-instance-method" class="signature"><strong>#select</strong>(name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &predicate : T -> Bool) : Channel(T)</a>
+        
+          <div class="summary"><p>Returns a channel which receives values received by <code>self</code> that satisfy the given <em>predicate</em>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#zip%28other%3AChannel%28U%29%2Cname%3Dnil%2Cbuffer_size%3D0%2C%26block%3AT%2CU-%3EV%29%3AChannel%28V%29forallU%2CV-instance-method" class="signature"><strong>#zip</strong>(other : Channel(U), name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &block : T, U -> V) : Channel(V) forall U, V</a>
+        
+          <div class="summary"><p>Returns a channel that receives tuples of values coming from <code>self</code> and <em>other</em> transformed via <em>block</em>.</p></div>
         
       </li>
     
@@ -287,227 +314,356 @@ will be indistinguishable from a closed channel.</p>
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="batch(size:Int32,interval:Time::Span,name=nil):Channel(Enumerable(T))-instance-method">
+    <div class="entry-detail" id="batch(size:Int32,interval:Time::Span,name=nil,buffer_size=0):Channel(Enumerable(T))-instance-method">
       <div class="signature">
         
-        def <strong>batch</strong>(size : Int32, interval : Time::Span, name = <span class="n">nil</span>) : <a href="Channel.html">Channel</a>(Enumerable(T))
+        def <strong>batch</strong>(size : Int32, interval : Time::Span, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>) : <a href="Channel.html">Channel</a>(Enumerable(T))
 
-        <a class="method-permalink" href="#batch%28size%3AInt32%2Cinterval%3ATime%3A%3ASpan%2Cname%3Dnil%29%3AChannel%28Enumerable%28T%29%29-instance-method">#</a>
+        <a class="method-permalink" href="#batch%28size%3AInt32%2Cinterval%3ATime%3A%3ASpan%2Cname%3Dnil%2Cbuffer_size%3D0%29%3AChannel%28Enumerable%28T%29%29-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Sends batches of messages either every <code>size</code> messages received or every <code>interval</code>,
-if a batch has not been sent within the last <code>interval</code>.</p>
+          <p>Returns a channel that receives values in batches either every <em>size</em> values
+received or every <em>interval</em>, if a batch has not been sent within the last <em>interval</em>.</p>
+<p>The returned channels will close once <code>self</code> is closed and empty.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/concur.cr#L194" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/489178bd446571b052db31b623287ba7206d2444/src/concur.cr#L313" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="broadcast(out_ports=2,name=nil)-instance-method">
+    <div class="entry-detail" id="broadcast(out_ports=2,name=nil,buffer_size=0):Array(Channel(T))-instance-method">
       <div class="signature">
         
-        def <strong>broadcast</strong>(out_ports = <span class="n">2</span>, name = <span class="n">nil</span>)
+        def <strong>broadcast</strong>(out_ports = <span class="n">2</span>, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>) : Array(<a href="Channel.html">Channel</a>(T))
 
-        <a class="method-permalink" href="#broadcast%28out_ports%3D2%2Cname%3Dnil%29-instance-method">#</a>
+        <a class="method-permalink" href="#broadcast%28out_ports%3D2%2Cname%3Dnil%2Cbuffer_size%3D0%29%3AArray%28Channel%28T%29%29-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p><span class="flag orange">TODO</span>  define a macro to return a Tuple</p>
+          <p>Returns an array of <em>out_ports</em> channels which receive each value
+received by <code>self</code>.</p>
+<p>The returned channels will close once <code>self</code> is closed and empty.</p>
+<p><span class="flag orange">TODO</span> . Document what happens if one of the returned channel is closed.</p>
+<p>Note. The rate at which values are received by each channel is limited
+by the slowest consumer.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/concur.cr#L152" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/489178bd446571b052db31b623287ba7206d2444/src/concur.cr#L248" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="each(name=nil,&amp;block:T-&gt;)-instance-method">
+    <div class="entry-detail" id="each(name=nil,&amp;block:T-&gt;_)-instance-method">
       <div class="signature">
         
-        def <strong>each</strong>(name = <span class="n">nil</span>, &block : T -> )
+        def <strong>each</strong>(name = <span class="n">nil</span>, &block : T -> _)
 
-        <a class="method-permalink" href="#each%28name%3Dnil%2C%26block%3AT-%3E%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/concur.cr#L234" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="listen(&amp;block:T-&gt;)-instance-method">
-      <div class="signature">
-        
-        def <strong>listen</strong>(&block : T -> )
-
-        <a class="method-permalink" href="#listen%28%26block%3AT-%3E%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/concur.cr#L225" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="map(initial_state:S,buffer_size=0,name=nil,&amp;block:S,T-&gt;V)forallS,V-instance-method">
-      <div class="signature">
-        
-        def <strong>map</strong>(initial_state : S, buffer_size = <span class="n">0</span>, name = <span class="n">nil</span>, &block : S, T -> V) forall S, V
-
-        <a class="method-permalink" href="#map%28initial_state%3AS%2Cbuffer_size%3D0%2Cname%3Dnil%2C%26block%3AS%2CT-%3EV%29forallS%2CV-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/concur.cr#L115" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="map(workers=1,buffer_size=0,name=nil,&amp;block:T-&gt;V):Channel(V)forallV-instance-method">
-      <div class="signature">
-        
-        def <strong>map</strong>(workers = <span class="n">1</span>, buffer_size = <span class="n">0</span>, name = <span class="n">nil</span>, &block : T -> V) : <a href="Channel.html">Channel</a>(V) forall V
-
-        <a class="method-permalink" href="#map%28workers%3D1%2Cbuffer_size%3D0%2Cname%3Dnil%2C%26block%3AT-%3EV%29%3AChannel%28V%29forallV-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/concur.cr#L95" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="merge(channel:Channel(J),name=nil):Channel(T|J)forallJ-instance-method">
-      <div class="signature">
-        
-        def <strong>merge</strong>(channel : <a href="Channel.html">Channel</a>(J), name = <span class="n">nil</span>) : <a href="Channel.html">Channel</a>(T | J) forall J
-
-        <a class="method-permalink" href="#merge%28channel%3AChannel%28J%29%2Cname%3Dnil%29%3AChannel%28T%7CJ%29forallJ-instance-method">#</a>
+        <a class="method-permalink" href="#each%28name%3Dnil%2C%26block%3AT-%3E_%29-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Pipes values from two channels into a single one.
-Note. If both channels have values ready to be received, then one will be selected at random.</p>
+          <p>Runs the given <em>block</em> for each value received from <code>self</code>.
+The execution of the block takes place on a separate fiber.</p>
+<p>The fiber running the block will stop once <code>self</code> is closed and empty.</p>
+<p><span class="flag orange">TODO</span> . Document what happens on exception raised.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/concur.cr#L65" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/489178bd446571b052db31b623287ba7206d2444/src/concur.cr#L365" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="partition(&amp;predicate:T-&gt;Bool):Tuple(Channel(T),Channel(T))-instance-method">
+    <div class="entry-detail" id="flat_map(workers=1,name=nil,buffer_size=0,&amp;block:T-&gt;Enumerable(V)):Channel(V)forallV-instance-method">
       <div class="signature">
         
-        def <strong>partition</strong>(&predicate : T -> Bool) : Tuple(<a href="Channel.html">Channel</a>(T), <a href="Channel.html">Channel</a>(T))
+        def <strong>flat_map</strong>(workers = <span class="n">1</span>, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &block : T -> Enumerable(V)) : <a href="Channel.html">Channel</a>(V) forall V
 
-        <a class="method-permalink" href="#partition%28%26predicate%3AT-%3EBool%29%3ATuple%28Channel%28T%29%2CChannel%28T%29%29-instance-method">#</a>
+        <a class="method-permalink" href="#flat_map%28workers%3D1%2Cname%3Dnil%2Cbuffer_size%3D0%2C%26block%3AT-%3EEnumerable%28V%29%29%3AChannel%28V%29forallV-instance-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>Returns a channel that receives each value of the enumerables produced
+applying <em>block</em> to values received by <code>self</code>.</p>
+<p>A <em>workers</em> parameter can be supplied to make the computation of the block concurrent.
+Note that, for <em>workers</em> &gt; 1, no order guarantees are made - see <code><a href="Channel.html#map%28initial_state%3AS%2Cname%3Dnil%2Cbuffer_size%3D0%2C%26block%3AS%2CT-%3ETuple%28S%2CV%29%29forallS%2CV-instance-method">#map</a></code> for an example.</p>
+<p>The returned channel is closed once <code>self</code> is closed and empty, and all
+the outstanding runs of <em>block</em> are completed.</p>
+<p>See <code><a href="Channel.html#map%28initial_state%3AS%2Cname%3Dnil%2Cbuffer_size%3D0%2C%26block%3AS%2CT-%3ETuple%28S%2CV%29%29forallS%2CV-instance-method">#map</a></code> for details on the exception handling strategy.</p>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/concur.cr#L182" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/489178bd446571b052db31b623287ba7206d2444/src/concur.cr#L178" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="rate_limit(items_per_sec:Float64,max_burst:Int32)-instance-method">
+    <div class="entry-detail" id="listen(&amp;block:T-&gt;_)-instance-method">
       <div class="signature">
         
-        def <strong>rate_limit</strong>(items_per_sec : Float64, max_burst : Int32)
+        def <strong>listen</strong>(&block : T -> _)
 
-        <a class="method-permalink" href="#rate_limit%28items_per_sec%3AFloat64%2Cmax_burst%3AInt32%29-instance-method">#</a>
+        <a class="method-permalink" href="#listen%28%26block%3AT-%3E_%29-instance-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>Receives values from <code>self</code> and processes them via <em>block</em>.</p>
+<p>If no exceptions are raised while evaluating <em>block</em>, then the
+statement returns once <code>self</code> is closed and empty.</p>
+<p><span class="flag orange">TODO</span> . Document what happens on exception raised.</p>
+<p>Note. This method runs on the current fiber.</p>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/concur.cr#L80" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/489178bd446571b052db31b623287ba7206d2444/src/concur.cr#L351" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="reject(name=nil,&amp;predicate:T-&gt;Bool):Channel(T)-instance-method">
+    <div class="entry-detail" id="map(initial_state:S,name=nil,buffer_size=0,&amp;block:S,T-&gt;Tuple(S,V))forallS,V-instance-method">
       <div class="signature">
         
-        def <strong>reject</strong>(name = <span class="n">nil</span>, &predicate : T -> Bool) : <a href="Channel.html">Channel</a>(T)
+        def <strong>map</strong>(initial_state : S, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &block : S, T -> Tuple(S, V)) forall S, V
 
-        <a class="method-permalink" href="#reject%28name%3Dnil%2C%26predicate%3AT-%3EBool%29%3AChannel%28T%29-instance-method">#</a>
+        <a class="method-permalink" href="#map%28initial_state%3AS%2Cname%3Dnil%2Cbuffer_size%3D0%2C%26block%3AS%2CT-%3ETuple%28S%2CV%29%29forallS%2CV-instance-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>Returns a channel that receives values from <code>self</code> transformed via <em>block</em> and based
+on the provided <em>initial_state</em>.</p>
+<p>Note. <em>block</em> is a function that takes the current state and a value received
+from <code>self</code> and returns a tuple composed of the next state to be passed to the block
+and the next value to be received by the returned channel.</p>
+<p>The returned channel is closed once <code>self</code> is closed and empty, and any outstanding
+run of <em>block</em> is completed.</p>
+<p>See <code><a href="Channel.html#map%28initial_state%3AS%2Cname%3Dnil%2Cbuffer_size%3D0%2C%26block%3AS%2CT-%3ETuple%28S%2CV%29%29forallS%2CV-instance-method">#map</a></code> for details on the exception handling strategy.</p>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/concur.cr#L176" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/489178bd446571b052db31b623287ba7206d2444/src/concur.cr#L195" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="scan(acc:U,buffer_size=0,name=nil,&amp;block:U,T-&gt;U):Channel(U)forallU-instance-method">
+    <div class="entry-detail" id="map(workers=1,name=nil,buffer_size=0,&amp;block:T-&gt;V):Channel(V)forallV-instance-method">
       <div class="signature">
         
-        def <strong>scan</strong>(acc : U, buffer_size = <span class="n">0</span>, name = <span class="n">nil</span>, &block : U, T -> U) : <a href="Channel.html">Channel</a>(U) forall U
+        def <strong>map</strong>(workers = <span class="n">1</span>, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &block : T -> V) : <a href="Channel.html">Channel</a>(V) forall V
 
-        <a class="method-permalink" href="#scan%28acc%3AU%2Cbuffer_size%3D0%2Cname%3Dnil%2C%26block%3AU%2CT-%3EU%29%3AChannel%28U%29forallU-instance-method">#</a>
+        <a class="method-permalink" href="#map%28workers%3D1%2Cname%3Dnil%2Cbuffer_size%3D0%2C%26block%3AT-%3EV%29%3AChannel%28V%29forallV-instance-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>Returns a channel that receives values from <code>self</code> transformed via <em>block</em>.</p>
+<p>A <em>workers</em> parameter can be supplied to make the computation of the block concurrent.
+Note that, for <em>workers</em> &gt; 1, no order guarantees are made.</p>
+<p>The returned channel will close once <code>self</code> is closed and empty, and all
+the outstanding runs of <em>block</em> are completed.</p>
+<p><span class="flag orange">TODO</span> . Document exception handling strategy.</p>
+<p>Example:</p>
+<pre><code class="language-crystal">source([<span class="n">1</span>,<span class="n">2</span>,<span class="n">3</span>])
+  .map(workers: <span class="n">2</span>) { <span class="o">|</span>v<span class="o">|</span> sleep rand; v<span class="o">**</span><span class="n">2</span> } <span class="c"># =&gt; [4, 1, 9]</span></code></pre>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/concur.cr#L123" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/489178bd446571b052db31b623287ba7206d2444/src/concur.cr#L148" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="select(name=nil,&amp;predicate:T-&gt;Bool):Channel(T)-instance-method">
+    <div class="entry-detail" id="merge(other:Channel(J),name=nil,buffer_size=0):Channel(T|J)forallJ-instance-method">
       <div class="signature">
         
-        def <strong>select</strong>(name = <span class="n">nil</span>, &predicate : T -> Bool) : <a href="Channel.html">Channel</a>(T)
+        def <strong>merge</strong>(other : <a href="Channel.html">Channel</a>(J), name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>) : <a href="Channel.html">Channel</a>(T | J) forall J
 
-        <a class="method-permalink" href="#select%28name%3Dnil%2C%26predicate%3AT-%3EBool%29%3AChannel%28T%29-instance-method">#</a>
+        <a class="method-permalink" href="#merge%28other%3AChannel%28J%29%2Cname%3Dnil%2Cbuffer_size%3D0%29%3AChannel%28T%7CJ%29forallJ-instance-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>Returns a channel that receives values from both <em>self</em> and <em>other</em>, as soon as they are available.</p>
+<p>The returned channel is closed as soon as both the input channels are closed and empty - but will
+continue to operate while at least one of them is open.</p>
+<p>Note. If both channels have values ready to be received, then one will be selected at random.</p>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/concur.cr#L163" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/489178bd446571b052db31b623287ba7206d2444/src/concur.cr#L95" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="zip(channel:Channel(U),name=nil,buffer_size=0,&amp;block:T,U-&gt;V):Channel(V)forallU,V-instance-method">
+    <div class="entry-detail" id="partition(name=nil,buffer_size=0,&amp;predicate:T-&gt;Bool):Tuple(Channel(T),Channel(T))-instance-method">
       <div class="signature">
         
-        def <strong>zip</strong>(channel : <a href="Channel.html">Channel</a>(U), name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &block : T, U -> V) : <a href="Channel.html">Channel</a>(V) forall U, V
+        def <strong>partition</strong>(name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &predicate : T -> Bool) : Tuple(<a href="Channel.html">Channel</a>(T), <a href="Channel.html">Channel</a>(T))
 
-        <a class="method-permalink" href="#zip%28channel%3AChannel%28U%29%2Cname%3Dnil%2Cbuffer_size%3D0%2C%26block%3AT%2CU-%3EV%29%3AChannel%28V%29forallU%2CV-instance-method">#</a>
+        <a class="method-permalink" href="#partition%28name%3Dnil%2Cbuffer_size%3D0%2C%26predicate%3AT-%3EBool%29%3ATuple%28Channel%28T%29%2CChannel%28T%29%29-instance-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>Returns a tuple of two channels, one receiving values that satisfy
+the given <em>predicate</em> and one receiving the remaining ones.</p>
+<p>The returned channels will close once <code>self</code> is closed and empty.</p>
+<p>See <code><a href="Channel.html#select%28name%3Dnil%2Cbuffer_size%3D0%2C%26predicate%3AT-%3EBool%29%3AChannel%28T%29-instance-method">#select</a></code> for details on the exception handling strategy.</p>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/concur.cr#L135" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/489178bd446571b052db31b623287ba7206d2444/src/concur.cr#L299" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rate_limit(items_per_sec:Float64,max_burst:Int32=1,name=nil,buffer_size=0)-instance-method">
+      <div class="signature">
+        
+        def <strong>rate_limit</strong>(items_per_sec : Float64, max_burst : Int32 = <span class="n">1</span>, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>)
+
+        <a class="method-permalink" href="#rate_limit%28items_per_sec%3AFloat64%2Cmax_burst%3AInt32%3D1%2Cname%3Dnil%2Cbuffer_size%3D0%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns a channel that receives at most <em>items_per_sec</em> items per second from the
+caller - or <em>max_burst</em> items, if no elements were received in a while.</p>
+<p>The returned channel is closed once <code>self</code> is closed and empty and a new value
+can be received, based on the rate limiting parameters.</p>
+<p>Refer to the documentation of <a href="https://github.com/lbarasti/rate_limiter">RateLimiter</a>
+for more details.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/489178bd446571b052db31b623287ba7206d2444/src/concur.cr#L118" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="reject(name=nil,buffer_size=0,&amp;predicate:T-&gt;Bool):Channel(T)-instance-method">
+      <div class="signature">
+        
+        def <strong>reject</strong>(name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &predicate : T -> Bool) : <a href="Channel.html">Channel</a>(T)
+
+        <a class="method-permalink" href="#reject%28name%3Dnil%2Cbuffer_size%3D0%2C%26predicate%3AT-%3EBool%29%3AChannel%28T%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns a channel which receives values received by <code>self</code>
+that do <strong>not</strong> satisfy the given <em>predicate</em>.</p>
+<p>The returned channels will close once <code>self</code> is closed and empty.</p>
+<p>See <code><a href="Channel.html#select%28name%3Dnil%2Cbuffer_size%3D0%2C%26predicate%3AT-%3EBool%29%3AChannel%28T%29-instance-method">#select</a></code> for details on the exception handling strategy.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/489178bd446571b052db31b623287ba7206d2444/src/concur.cr#L287" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="scan(acc:U,name=nil,buffer_size=0,&amp;block:U,T-&gt;U):Channel(U)forallU-instance-method">
+      <div class="signature">
+        
+        def <strong>scan</strong>(acc : U, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &block : U, T -> U) : <a href="Channel.html">Channel</a>(U) forall U
+
+        <a class="method-permalink" href="#scan%28acc%3AU%2Cname%3Dnil%2Cbuffer_size%3D0%2C%26block%3AU%2CT-%3EU%29%3AChannel%28U%29forallU-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns a channel that receives each successive accumulated state produced by <em>block</em>,
+based on the initial state <em>acc</em> and on the values received by <code>self</code>.</p>
+<p>The returned channel is closed once <code>self</code> is closed and empty, and any outstanding
+run of <em>block</em> is completed.</p>
+<p>See <code><a href="Channel.html#map%28initial_state%3AS%2Cname%3Dnil%2Cbuffer_size%3D0%2C%26block%3AS%2CT-%3ETuple%28S%2CV%29%29forallS%2CV-instance-method">#map</a></code> for details on the exception handling strategy.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/489178bd446571b052db31b623287ba7206d2444/src/concur.cr#L210" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="select(name=nil,buffer_size=0,&amp;predicate:T-&gt;Bool):Channel(T)-instance-method">
+      <div class="signature">
+        
+        def <strong>select</strong>(name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &predicate : T -> Bool) : <a href="Channel.html">Channel</a>(T)
+
+        <a class="method-permalink" href="#select%28name%3Dnil%2Cbuffer_size%3D0%2C%26predicate%3AT-%3EBool%29%3AChannel%28T%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns a channel which receives values received by <code>self</code>
+that satisfy the given <em>predicate</em>.</p>
+<p>The returned channels will close once <code>self</code> is closed and empty.</p>
+<p><span class="flag orange">TODO</span> . Document what happens if the predicate throws an exception</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/489178bd446571b052db31b623287ba7206d2444/src/concur.cr#L268" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="zip(other:Channel(U),name=nil,buffer_size=0,&amp;block:T,U-&gt;V):Channel(V)forallU,V-instance-method">
+      <div class="signature">
+        
+        def <strong>zip</strong>(other : <a href="Channel.html">Channel</a>(U), name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &block : T, U -> V) : <a href="Channel.html">Channel</a>(V) forall U, V
+
+        <a class="method-permalink" href="#zip%28other%3AChannel%28U%29%2Cname%3Dnil%2Cbuffer_size%3D0%2C%26block%3AT%2CU-%3EV%29%3AChannel%28V%29forallU%2CV-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns a channel that receives tuples of values coming from <code>self</code> and <em>other</em>
+transformed via <em>block</em>.</p>
+<p>The returned channel is closed once either <code>self</code> or <code>other</code> are closed and empty,
+and any outstanding run of <em>block</em> is completed.</p>
+<p>See <code><a href="Channel.html#map%28initial_state%3AS%2Cname%3Dnil%2Cbuffer_size%3D0%2C%26block%3AS%2CT-%3ETuple%28S%2CV%29%29forallS%2CV-instance-method">#map</a></code> for details on the exception handling strategy.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/489178bd446571b052db31b623287ba7206d2444/src/concur.cr#L224" target="_blank">View source</a>]
         
       </div>
     </div>
