@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="generator" content="Crystal Docs 0.36.1">
+<meta name="generator" content="Crystal Docs 1.2.2">
 <meta name="crystal_docs.project_version" content="master">
 <meta name="crystal_docs.project_name" content="concur">
 
@@ -56,8 +56,28 @@
       
     </li>
   
-  <li class=" current" data-id="concur/Concur" data-name="concur">
+  <li class="parent open current" data-id="concur/Concur" data-name="concur">
       <a href="Concur.html">Concur</a>
+      
+        <ul>
+  
+  <li class=" " data-id="concur/Concur/EmptyError" data-name="concur::emptyerror">
+      <a href="Concur/EmptyError.html">EmptyError</a>
+      
+    </li>
+  
+  <li class=" " data-id="concur/Concur/Future" data-name="concur::future(t)">
+      <a href="Concur/Future.html">Future</a>
+      
+    </li>
+  
+  <li class=" " data-id="concur/Concur/Timeout" data-name="concur::timeout">
+      <a href="Concur/Timeout.html">Timeout</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -101,8 +121,15 @@
   </h2>
   
     
-      <a href="https://github.com/lbarasti/concur/blob/129bf3c12ebedaff2390d29f7004167d34c981de/src/concur.cr#L3" target="_blank">
+      <a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/concur.cr#L3" target="_blank">
         concur.cr
+      </a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/future.cr#L1" target="_blank">
+        future.cr
       </a>
     
     <br/>
@@ -127,22 +154,22 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#every(t:Time::Span,name=nil,buffer_size=0,terminate=Channel(Time).new,&block:-%3ET):Channel(T)forallT-instance-method" class="signature"><strong>#every</strong>(t : Time::Span, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, terminate = <span class="t">Channel</span>(<span class="t">Time</span>).<span class="k">new</span>, &block :  -> T) : Channel(T) forall T</a>
+        <a href="#every%28t%3ATime%3A%3ASpan%2Cname%3Dnil%2Cbuffer_size%3D0%2Cterminate%3DChannel%28Time%29.new%2C%26block%3A-%3ET%29%3AChannel%28T%29forallT-instance-method" class="signature"><strong>#every</strong>(t : Time::Span, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, terminate = <span class="t">Channel</span>(<span class="t">Time</span>).<span class="k">new</span>, &block :  -> T) : Channel(T) forall T</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#flatten(in_stream:Channel(Enumerable(K)),name=nil):Channel(K)forallK-instance-method" class="signature"><strong>#flatten</strong>(in_stream : Channel(Enumerable(K)), name = <span class="n">nil</span>) : Channel(K) forall K</a>
+        <a href="#flatten%28in_stream%3AChannel%28Enumerable%28K%29%29%2Cname%3Dnil%29%3AChannel%28K%29forallK-instance-method" class="signature"><strong>#flatten</strong>(in_stream : Channel(Enumerable(K)), name = <span class="n">nil</span>) : Channel(K) forall K</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#source(input:Enumerable(T),name=nil,buffer_size=0):Channel(T)forallT-instance-method" class="signature"><strong>#source</strong>(input : Enumerable(T), name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>) : Channel(T) forall T</a>
+        <a href="#source%28input%3AEnumerable%28T%29%2Cname%3Dnil%2Cbuffer_size%3D0%29%3AChannel%28T%29forallT-instance-method" class="signature"><strong>#source</strong>(input : Enumerable(T), name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>) : Channel(T) forall T</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#source(initial_state:S,name=nil,buffer_size=0,&block:S-%3ETuple(S,V))forallS,V-instance-method" class="signature"><strong>#source</strong>(initial_state : S, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &block : S -> Tuple(S, V)) forall S, V</a>
+        <a href="#source%28initial_state%3AS%2Cname%3Dnil%2Cbuffer_size%3D0%2C%26block%3AS-%3ETuple%28S%2CV%29%29forallS%2CV-instance-method" class="signature"><strong>#source</strong>(initial_state : S, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &block : S -> Tuple(S, V)) forall S, V</a>
         
       </li>
     
@@ -170,18 +197,18 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="every(t:Time::Span,name=nil,buffer_size=0,terminate=Channel(Time).new,&block:->T):Channel(T)forallT-instance-method">
+    <div class="entry-detail" id="every(t:Time::Span,name=nil,buffer_size=0,terminate=Channel(Time).new,&amp;block:-&gt;T):Channel(T)forallT-instance-method">
       <div class="signature">
         
         def <strong>every</strong>(t : Time::Span, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, terminate = <span class="t">Channel</span>(<span class="t">Time</span>).<span class="k">new</span>, &block :  -> T) : <a href="Channel.html">Channel</a>(T) forall T
 
-        <a class="method-permalink" href="#every(t:Time::Span,name=nil,buffer_size=0,terminate=Channel(Time).new,&block:-%3ET):Channel(T)forallT-instance-method">#</a>
+        <a class="method-permalink" href="#every%28t%3ATime%3A%3ASpan%2Cname%3Dnil%2Cbuffer_size%3D0%2Cterminate%3DChannel%28Time%29.new%2C%26block%3A-%3ET%29%3AChannel%28T%29forallT-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/129bf3c12ebedaff2390d29f7004167d34c981de/src/concur.cr#L27" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/concur.cr#L27" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -191,13 +218,13 @@
         
         def <strong>flatten</strong>(in_stream : <a href="Channel.html">Channel</a>(Enumerable(K)), name = <span class="n">nil</span>) : <a href="Channel.html">Channel</a>(K) forall K
 
-        <a class="method-permalink" href="#flatten(in_stream:Channel(Enumerable(K)),name=nil):Channel(K)forallK-instance-method">#</a>
+        <a class="method-permalink" href="#flatten%28in_stream%3AChannel%28Enumerable%28K%29%29%2Cname%3Dnil%29%3AChannel%28K%29forallK-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/129bf3c12ebedaff2390d29f7004167d34c981de/src/concur.cr#L46" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/concur.cr#L46" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -207,29 +234,29 @@
         
         def <strong>source</strong>(input : Enumerable(T), name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>) : <a href="Channel.html">Channel</a>(T) forall T
 
-        <a class="method-permalink" href="#source(input:Enumerable(T),name=nil,buffer_size=0):Channel(T)forallT-instance-method">#</a>
+        <a class="method-permalink" href="#source%28input%3AEnumerable%28T%29%2Cname%3Dnil%2Cbuffer_size%3D0%29%3AChannel%28T%29forallT-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/129bf3c12ebedaff2390d29f7004167d34c981de/src/concur.cr#L4" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/concur.cr#L4" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="source(initial_state:S,name=nil,buffer_size=0,&block:S->Tuple(S,V))forallS,V-instance-method">
+    <div class="entry-detail" id="source(initial_state:S,name=nil,buffer_size=0,&amp;block:S-&gt;Tuple(S,V))forallS,V-instance-method">
       <div class="signature">
         
         def <strong>source</strong>(initial_state : S, name = <span class="n">nil</span>, buffer_size = <span class="n">0</span>, &block : S -> Tuple(S, V)) forall S, V
 
-        <a class="method-permalink" href="#source(initial_state:S,name=nil,buffer_size=0,&block:S-%3ETuple(S,V))forallS,V-instance-method">#</a>
+        <a class="method-permalink" href="#source%28initial_state%3AS%2Cname%3Dnil%2Cbuffer_size%3D0%2C%26block%3AS-%3ETuple%28S%2CV%29%29forallS%2CV-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/129bf3c12ebedaff2390d29f7004167d34c981de/src/concur.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/concur.cr#L15" target="_blank">View source</a>]
         
       </div>
     </div>

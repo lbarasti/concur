@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Crystal Docs 1.2.2">
+<meta name="crystal_docs.project_version" content="master">
+<meta name="crystal_docs.project_name" content="concur">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="concur">
+  <title>Concur::Future(T) - concur master</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          concur
+        </a>
+      </h1>
+
+      <span class="project-version">
+        master
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class=" " data-id="concur/Channel" data-name="channel(t)">
+      <a href="../Channel.html">Channel</a>
+      
+    </li>
+  
+  <li class="parent open current" data-id="concur/Concur" data-name="concur">
+      <a href="../Concur.html">Concur</a>
+      
+        <ul>
+  
+  <li class=" " data-id="concur/Concur/EmptyError" data-name="concur::emptyerror">
+      <a href="../Concur/EmptyError.html">EmptyError</a>
+      
+    </li>
+  
+  <li class=" current" data-id="concur/Concur/Future" data-name="concur::future(t)">
+      <a href="../Concur/Future.html">Future</a>
+      
+    </li>
+  
+  <li class=" " data-id="concur/Concur/Timeout" data-name="concur::timeout">
+      <a href="../Concur/Timeout.html">Timeout</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">class</span> Concur::Future(T)
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../Concur/Future.html">Concur::Future(T)</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>A Future represents a value which may or may not <em>currently</em> be available, but will be
+available at some point, or an exception if that value could not be made available.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/future.cr#L10" target="_blank">
+        future.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28%26block%3A-%3ET%29-class-method" class="signature"><strong>.new</strong>(&block :  -> T)</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#await%28t%3ATime%3A%3ASpan%29%3AT%7CException-instance-method" class="signature"><strong>#await</strong>(t : Time::Span) : T | Exception</a>
+        
+          <div class="summary"><p>Same as <code><a href="../Concur/Future.html#await%3AT%7CException-instance-method">#await</a></code>, but returns a <code><a href="../Concur/Timeout.html">Timeout</a></code> exception if the given <code>t</code> expires.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#await%3AT%7CException-instance-method" class="signature"><strong>#await</strong> : T | Exception</a>
+        
+          <div class="summary"><p>Awaits the completion of the future and returns either a value or an exception.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#await%21%28t%3ATime%3A%3ASpan%29%3AT-instance-method" class="signature"><strong>#await!</strong>(t : Time::Span) : T</a>
+        
+          <div class="summary"><p>Same as <code><a href="../Concur/Future.html#await%21%3AT-instance-method">#await!</a></code>, but raises a <code><a href="../Concur/Timeout.html">Timeout</a></code> exception if the given <code>t</code> expires.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#await%21%3AT-instance-method" class="signature"><strong>#await!</strong> : T</a>
+        
+          <div class="summary"><p>Awaits the completion of the future and either returns the computed value or raises an exception.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#done%3F-instance-method" class="signature"><strong>#done?</strong></a>
+        
+          <div class="summary"><p>Returns <code>true</code> if the future has completed - either with a value or an exception.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#flat_map%28%26block%3AT-%3EFuture%28K%29%29%3AFuture%28K%29forallK-instance-method" class="signature"><strong>#flat_map</strong>(&block : T -> Future(K)) : Future(K) forall K</a>
+        
+          <div class="summary"><p>Creates a new future by applying a function to the successful result of this future, and returns the result of the function as the new future.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#flatten-instance-method" class="signature"><strong>#flatten</strong></a>
+        
+          <div class="summary"><p>Creates a new future with one level of nesting flattened.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#map%28%26block%3AT-%3EK%29%3AFuture%28K%29forallK-instance-method" class="signature"><strong>#map</strong>(&block : T -> K) : Future(K) forall K</a>
+        
+          <div class="summary"><p>Creates a new future by applying a function to the successful result of this future.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#map_to%28typ%3AObject.class%29-instance-method" class="signature"><strong>#map_to</strong>(typ : <span class="t">Object</span>.<span class="k">class</span>)</a>
+        
+          <div class="summary"><p>Creates a new Future which is completed with this Future's result if that conforms to type <code>typ</code> or a <code>TypeCastError</code> otherwise.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#on_complete%28%26block%3AT%7CException-%3E_%29%3AFuture%28T%29-instance-method" class="signature"><strong>#on_complete</strong>(&block : T | Exception -> _) : Future(T)</a>
+        
+          <div class="summary"><p>Applies the side-effecting function to the result of this future, and returns a new future with the result of this future.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#on_error%28%26block%3AException-%3E_%29%3AFuture%28T%29-instance-method" class="signature"><strong>#on_error</strong>(&block : Exception -> _) : Future(T)</a>
+        
+          <div class="summary"><p>Applies the side-effecting function to the result of this future if it raised an error, and returns a new future with the result of this future.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#on_success%28%26block%3AT-%3E_%29%3AFuture%28T%29-instance-method" class="signature"><strong>#on_success</strong>(&block : T -> _) : Future(T)</a>
+        
+          <div class="summary"><p>Applies the side-effecting function to the result of this future if it was successful, and returns a new future with the result of this future.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#recover%28%26block%3AException-%3ET%29%3AFuture%28T%29-instance-method" class="signature"><strong>#recover</strong>(&block : Exception -> T) : Future(T)</a>
+        
+          <div class="summary"><p>Creates a new future that will handle any matching throwable that this future might contain.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#select%28%26block%3AT-%3EBool%29%3AFuture%28T%29-instance-method" class="signature"><strong>#select</strong>(&block : T -> Bool) : Future(T)</a>
+        
+          <div class="summary"><p>Creates a new future by filtering the value of the current future with a predicate.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#transform%28%26block%3AT%7CException-%3EK%29%3AFuture%28K%29forallK-instance-method" class="signature"><strong>#transform</strong>(&block : T | Exception -> K) : Future(K) forall K</a>
+        
+          <div class="summary"><p>Creates a new Future by applying the specified function to the result of this Future.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#zip%28other%3AFuture%28K%29%2C%26block%3AT%2CK-%3EW%29%3AFuture%28W%29forallK%2CW-instance-method" class="signature"><strong>#zip</strong>(other : Future(K), &block : T, K -> W) : Future(W) forall K, W</a>
+        
+          <div class="summary"><p>Creates a new future holding the result of <code>block</code> applied to the tuple of values from two futures.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+<div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(&amp;block:-&gt;T)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(&block :  -> T)
+
+        <a class="method-permalink" href="#new%28%26block%3A-%3ET%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/future.cr#L14" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="await(t:Time::Span):T|Exception-instance-method">
+      <div class="signature">
+        
+        def <strong>await</strong>(t : Time::Span) : T | Exception
+
+        <a class="method-permalink" href="#await%28t%3ATime%3A%3ASpan%29%3AT%7CException-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Same as <code><a href="../Concur/Future.html#await%3AT%7CException-instance-method">#await</a></code>, but returns a <code><a href="../Concur/Timeout.html">Timeout</a></code> exception if the given <code>t</code> expires.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/future.cr#L53" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="await:T|Exception-instance-method">
+      <div class="signature">
+        
+        def <strong>await</strong> : T | Exception
+
+        <a class="method-permalink" href="#await%3AT%7CException-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Awaits the completion of the future and returns either a value or an exception.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/future.cr#L27" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="await!(t:Time::Span):T-instance-method">
+      <div class="signature">
+        
+        def <strong>await!</strong>(t : Time::Span) : T
+
+        <a class="method-permalink" href="#await%21%28t%3ATime%3A%3ASpan%29%3AT-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Same as <code><a href="../Concur/Future.html#await%21%3AT-instance-method">#await!</a></code>, but raises a <code><a href="../Concur/Timeout.html">Timeout</a></code> exception if the given <code>t</code> expires.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/future.cr#L70" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="await!:T-instance-method">
+      <div class="signature">
+        
+        def <strong>await!</strong> : T
+
+        <a class="method-permalink" href="#await%21%3AT-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Awaits the completion of the future and either returns the computed value
+or raises an exception.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/future.cr#L43" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="done?-instance-method">
+      <div class="signature">
+        
+        def <strong>done?</strong>
+
+        <a class="method-permalink" href="#done%3F-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns <code>true</code> if the future has completed - either with a value or an exception.
+Returns <code>false</code> otherwise.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/future.cr#L81" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="flat_map(&amp;block:T-&gt;Future(K)):Future(K)forallK-instance-method">
+      <div class="signature">
+        
+        def <strong>flat_map</strong>(&block : T -> <a href="../Concur/Future.html">Future</a>(K)) : <a href="../Concur/Future.html">Future</a>(K) forall K
+
+        <a class="method-permalink" href="#flat_map%28%26block%3AT-%3EFuture%28K%29%29%3AFuture%28K%29forallK-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates a new future by applying a function to the successful result of this future,
+and returns the result of the function as the new future.</p>
+<p>If this future is completed with an exception then the new future will also contain this exception.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/future.cr#L89" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="flatten-instance-method">
+      <div class="signature">
+        
+        def <strong>flatten</strong>
+
+        <a class="method-permalink" href="#flatten-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates a new future with one level of nesting flattened.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/future.cr#L96" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="map(&amp;block:T-&gt;K):Future(K)forallK-instance-method">
+      <div class="signature">
+        
+        def <strong>map</strong>(&block : T -> K) : <a href="../Concur/Future.html">Future</a>(K) forall K
+
+        <a class="method-permalink" href="#map%28%26block%3AT-%3EK%29%3AFuture%28K%29forallK-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates a new future by applying a function to the successful result of this future.</p>
+<p>If this future is completed with an exception then the new future will also contain this exception.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/future.cr#L103" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="map_to(typ:Object.class)-instance-method">
+      <div class="signature">
+        
+        def <strong>map_to</strong>(typ : <span class="t">Object</span>.<span class="k">class</span>)
+
+        <a class="method-permalink" href="#map_to%28typ%3AObject.class%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates a new Future which is completed with this Future's result if
+that conforms to type <code>typ</code> or a <code>TypeCastError</code> otherwise.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/future.cr#L116" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="on_complete(&amp;block:T|Exception-&gt;_):Future(T)-instance-method">
+      <div class="signature">
+        
+        def <strong>on_complete</strong>(&block : T | Exception -> _) : <a href="../Concur/Future.html">Future</a>(T)
+
+        <a class="method-permalink" href="#on_complete%28%26block%3AT%7CException-%3E_%29%3AFuture%28T%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Applies the side-effecting function to the result of this future, and returns a new future
+with the result of this future.</p>
+<p>This method allows one to enforce that the callbacks are executed in a specified order.
+Note: if one of the chained <code><a href="../Concur/Future.html#on_complete%28%26block%3AT%7CException-%3E_%29%3AFuture%28T%29-instance-method">#on_complete</a></code> callbacks throws an exception, that exception is not
+propagated to the subsequent <code><a href="../Concur/Future.html#on_complete%28%26block%3AT%7CException-%3E_%29%3AFuture%28T%29-instance-method">#on_complete</a></code> callbacks. Instead, the subsequent <code><a href="../Concur/Future.html#on_complete%28%26block%3AT%7CException-%3E_%29%3AFuture%28T%29-instance-method">#on_complete</a></code> callbacks
+are given the original value of this future.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/future.cr#L127" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="on_error(&amp;block:Exception-&gt;_):Future(T)-instance-method">
+      <div class="signature">
+        
+        def <strong>on_error</strong>(&block : Exception -> _) : <a href="../Concur/Future.html">Future</a>(T)
+
+        <a class="method-permalink" href="#on_error%28%26block%3AException-%3E_%29%3AFuture%28T%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Applies the side-effecting function to the result of this future if it raised an error, and
+returns a new future with the result of this future.</p>
+<p><span class="flag yellow">WARNING</span>  Will not be called if this future is never completed or if it is completed with success.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/future.cr#L158" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="on_success(&amp;block:T-&gt;_):Future(T)-instance-method">
+      <div class="signature">
+        
+        def <strong>on_success</strong>(&block : T -> _) : <a href="../Concur/Future.html">Future</a>(T)
+
+        <a class="method-permalink" href="#on_success%28%26block%3AT-%3E_%29%3AFuture%28T%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Applies the side-effecting function to the result of this future if it was successful, and
+returns a new future with the result of this future.</p>
+<p><span class="flag yellow">WARNING</span>  Will not be called if this future is never completed or if it is completed with an error.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/future.cr#L145" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="recover(&amp;block:Exception-&gt;T):Future(T)-instance-method">
+      <div class="signature">
+        
+        def <strong>recover</strong>(&block : Exception -> T) : <a href="../Concur/Future.html">Future</a>(T)
+
+        <a class="method-permalink" href="#recover%28%26block%3AException-%3ET%29%3AFuture%28T%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates a new future that will handle any matching throwable that this future might contain.
+If there is no match, or if this future contains a valid result then the new future will contain the same.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/future.cr#L169" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="select(&amp;block:T-&gt;Bool):Future(T)-instance-method">
+      <div class="signature">
+        
+        def <strong>select</strong>(&block : T -> Bool) : <a href="../Concur/Future.html">Future</a>(T)
+
+        <a class="method-permalink" href="#select%28%26block%3AT-%3EBool%29%3AFuture%28T%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates a new future by filtering the value of the current future with a predicate.</p>
+<p>If the current future contains a value which satisfies the predicate, the new future will also hold that value.
+Otherwise, the resulting future will fail with a <code><a href="../Concur/EmptyError.html">EmptyError</a></code>.
+If the current future fails, then the resulting future also fails.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/future.cr#L185" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="transform(&amp;block:T|Exception-&gt;K):Future(K)forallK-instance-method">
+      <div class="signature">
+        
+        def <strong>transform</strong>(&block : T | Exception -> K) : <a href="../Concur/Future.html">Future</a>(K) forall K
+
+        <a class="method-permalink" href="#transform%28%26block%3AT%7CException-%3EK%29%3AFuture%28K%29forallK-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates a new Future by applying the specified function to the result of this Future.</p>
+<p>If there is any non-fatal exception thrown when 'block' is applied then that exception
+will be propagated to the resulting future.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/future.cr#L199" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="zip(other:Future(K),&amp;block:T,K-&gt;W):Future(W)forallK,W-instance-method">
+      <div class="signature">
+        
+        def <strong>zip</strong>(other : <a href="../Concur/Future.html">Future</a>(K), &block : T, K -> W) : <a href="../Concur/Future.html">Future</a>(W) forall K, W
+
+        <a class="method-permalink" href="#zip%28other%3AFuture%28K%29%2C%26block%3AT%2CK-%3EW%29%3AFuture%28W%29forallK%2CW-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates a new future holding the result of <code>block</code> applied to the tuple of values from two futures.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/lbarasti/concur/blob/9f4dd6f783fe753b5ca3ddbac09a4da686613a69/src/future.cr#L206" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+</div>
+
+</body>
+</html>
