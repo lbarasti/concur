@@ -6,7 +6,8 @@ record MouseEvent, id : Int32, pos : {Int32, Int32}
 
 keypress = Channel(KeyboardEvent).new
 mouse_click = Channel(MouseEvent).new
-spawn do
+
+spawn(name: "event simulator") do
   loop do
     sleep rand
     rand < 0.3 ?

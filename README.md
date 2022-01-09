@@ -143,7 +143,7 @@ keypress.merge(mouse_click)
 
 Concur also lets you spin off concurrent computations very easily. Here is an example
 where we let 4 workers compute the distance of a 2D point from the origin of a Cartesian plane.
-We then produce an estimate of the constant Pi and look at how many iterations it took the process
+We then produce [an estimate of the constant Pi](https://en.wikipedia.org/wiki/Approximations_of_%CF%80#Summing_a_circle's_area) and look at how many iterations it took the process
 to generate 10 consecutive estimates with a relative error of less than `1e-5`.
 
 ```crystal
@@ -162,7 +162,7 @@ source(Random.new) { |gen| {gen, {gen.rand, gen.rand}} }
   .take 1 # => [235191]
 ```
 
-Check out the [API docs](https://lbarasti.com/concur/) and the `/examples` for more details.
+Check out the [API docs](https://lbarasti.com/concur/) and the `/examples` folder for more details.
 
 ## Development
 

@@ -1,6 +1,9 @@
 require "../src/concur"
 include Concur
 
+# How many iterations does it take us to get 10 consecutive
+# estimates of PI with small relative error?
+# Reference: https://en.wikipedia.org/wiki/Approximations_of_%CF%80#Summing_a_circle's_area
 pp source(Random.new) { |gen| {gen, {gen.rand, gen.rand}} }
   .map(workers: 4) { |(x,y)| x**2 + y**2 }
   .scan({0, 0}) { |acc, v|
