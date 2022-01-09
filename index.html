@@ -97,7 +97,11 @@
     <use href="#octicon-link"/>
   </svg>
 </a>concur</h1>
-<p>A collection of primitives for event-driven programming.</p>
+<p>Concur is organised around two APIs:</p>
+<ul>
+<li>A <code>Future</code> API to deal with asynchronous computations</li>
+<li>An augmented <code><a href="Channel.html">Channel</a></code> API with primitives to simplify event-driven programming.</li>
+</ul>
 <h2><a id="installation" class="anchor" href="#installation">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -153,7 +157,78 @@ permission_f : <span class="t">Future</span>(<span class="t">Bool</span>) <span 
     reviewer_f.await!.email(content)
   }
   .on_error { <span class="o">|</span>ex<span class="o">|</span> log_error(ex) }</code></pre>
-<p>Check out the <a href="https://lbarasti.com/concur/">API docs</a> for more details.</p>
+<h3><a id="using-channel" class="anchor" href="#using-channel">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Using Channel</h3>
+<p>Concur tries to increase the usability of <code><a href="Channel.html">Channel</a></code> by adding a collection of transformation and callback methods to its API.</p>
+<h4><a id="sources-the-beginning-and-the-end" class="anchor" href="#sources-the-beginning-and-the-end">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Sources: the beginning and the end</h4>
+<p>A Concur flow usually starts with a <em>source</em>.</p>
+<pre><code class="language-crystal">s1 <span class="o">=</span> <span class="t">Concur</span>.source(<span class="n">1</span>..<span class="n">10</span>) <span class="c"># returns a Channel(Int32) receiving each value of the range</span>
+
+s2 <span class="o">=</span> <span class="t">Concur</span>.source(initial_state: <span class="n">0</span>) { <span class="o">|</span>state<span class="o">|</span> (state <span class="o">+</span> <span class="n">1</span>)<span class="o">**</span><span class="n">2</span> } <span class="c"># returns a Channel(Int32) receiving the values (i + 1)^2 for i = 0,1,...</span>
+
+s3 <span class="o">=</span> <span class="t">Concur</span>.every(<span class="n">1</span>.second) { <span class="t">Time</span>.utc } <span class="c"># returns a Channel(Time) receiving a timestamp approximately every second</span></code></pre>
+<p>Sources can also be built by simply defining a channel and having some fiber send values to it. For example, suppose you want your application to react to some keyboard event
+that lets you register a callback:</p>
+<pre><code class="language-crystal">s4 <span class="o">=</span> <span class="t">Channel</span>(<span class="t">KeyboardEvent</span>).<span class="k">new</span>
+keybord.on_keypress { <span class="o">|</span>event<span class="o">|</span> s4.send event }</code></pre>
+<p>Now that we have some sources, we can leverage Concur's API to materialise them or define some callbacks that will run every
+time the channel receives a value.</p>
+<pre><code class="language-crystal">s1.listen { <span class="o">|</span>v<span class="o">|</span> puts v } <span class="c"># prints values from 1 to 10</span>
+
+s2.take(<span class="n">3</span>) <span class="c"># =&gt; [1, 4, 25]</span>
+
+s3.each { <span class="o">|</span>time<span class="o">|</span>
+  puts <span class="s">&quot;you&#39;re living in the past&quot;</span> <span class="k">if</span> time.year <span class="o">&lt;</span> <span class="n">2022</span>
+}</code></pre>
+<h4><a id="sources-the-middle" class="anchor" href="#sources-the-middle">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Sources: the middle</h4>
+<p>We've seen how we can create a source and how we can <em>consume</em> it. Let's now look at how we can transform it.</p>
+<p>Here is an example where we merge two event streams, batch them, process them into a new state and then persist that.</p>
+<pre><code class="language-crystal">keypress <span class="o">=</span> <span class="t">Channel</span>(<span class="t">KeyboardEvent</span>).<span class="k">new</span>
+mouse_click <span class="o">=</span> <span class="t">Channel</span>(<span class="t">MouseEvent</span>).<span class="k">new</span>
+
+<span class="c"># persist the state of the system every 5 events or every second,</span>
+<span class="c"># whichever happens first</span>
+keypress.merge(mouse_click)
+  .batch(size: <span class="n">5</span>, interval: <span class="n">1</span>.seconds)
+  .scan({<span class="s">&quot;&quot;</span>, {<span class="n">0</span>,<span class="n">0</span>}}) { <span class="o">|</span>state, events<span class="o">|</span>
+    events.reduce(state) { <span class="o">|</span>s, e<span class="o">|</span>
+      <span class="k">case</span> e
+      <span class="k">in</span> <span class="t">MouseEvent</span>
+        {s[<span class="n">0</span>], e.pos}
+      <span class="k">in</span> <span class="t">KeyboardEvent</span>
+        {s[<span class="n">0</span>] <span class="o">+</span> e.key, s[<span class="n">1</span>]}
+      <span class="k">end</span>
+    }
+  }.each { <span class="o">|</span>state<span class="o">|</span> persist(state) }</code></pre>
+<p>Concur also lets you spin off concurrent computations very easily. Here is an example
+where we let 4 workers compute the distance of a 2D point from the origin of a Cartesian plane.
+We then produce <a href="https://en.wikipedia.org/wiki/Approximations_of_%CF%80#Summing_a_circle%27s_area">an estimate of the constant Pi</a> and look at how many iterations it took the process
+to generate 10 consecutive estimates with a relative error of less than <code>1e-5</code>.</p>
+<pre><code class="language-crystal">source(<span class="t">Random</span>.<span class="k">new</span>) { <span class="o">|</span>gen<span class="o">|</span> {gen, {gen.rand, gen.rand}} }
+  .map(workers: <span class="n">4</span>) { <span class="o">|</span>(x,y)<span class="o">|</span> x<span class="o">**</span><span class="n">2</span> <span class="o">+</span> y<span class="o">**</span><span class="n">2</span> }
+  .scan({<span class="n">0</span>, <span class="n">0</span>}) { <span class="o">|</span>acc, v<span class="o">|</span>
+    v <span class="o">&lt;=</span> <span class="n">1</span> ? {acc[<span class="n">0</span>] <span class="o">+</span> <span class="n">1</span>, acc[<span class="n">1</span>]} : {acc[<span class="n">0</span>], acc[<span class="n">1</span>] <span class="o">+</span> <span class="n">1</span>}
+  }.map { <span class="o">|</span>(inner, outer)<span class="o">|</span> <span class="n">4</span> <span class="o">*</span> inner <span class="o">/</span> (inner <span class="o">+</span> outer)}
+  .zip(source(<span class="n">1</span>..)) { <span class="o">|</span>estimate, iteration<span class="o">|</span> {iteration, estimate} }
+  .batch(<span class="n">10</span>, <span class="n">1</span>.second)
+  .<span class="k">select</span> { <span class="o">|</span>estimates<span class="o">|</span>
+    estimates.all? { <span class="o">|</span>(i, e)<span class="o">|</span>
+      (e <span class="o">-</span> <span class="t">Math</span><span class="t">::</span><span class="t">PI</span>).abs <span class="o">/</span> <span class="t">Math</span><span class="t">::</span><span class="t">PI</span> <span class="o">&lt;</span> <span class="n">1e-5</span>
+    }
+  }.flat_map { <span class="o">|</span>estimates<span class="o">|</span> estimates.map(<span class="o">&amp;</span>.first) }
+  .take <span class="n">1</span> <span class="c"># =&gt; [235191]</span></code></pre>
+<p>Check out the <a href="https://lbarasti.com/concur/">API docs</a> and the <code>/examples</code> folder for more details.</p>
 <h2><a id="development" class="anchor" href="#development">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
