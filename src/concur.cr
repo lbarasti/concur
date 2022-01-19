@@ -1,6 +1,8 @@
 require "rate_limiter"
 
 module Concur
+  extend self
+
   # Returns a channel that will receive each element in the given enumerable,
   # and then close.
   def source(input : Enumerable(T), name = nil, buffer_size = 0) : Channel(T) forall T
@@ -210,7 +212,7 @@ abstract class ::Channel(T)
   ) : Channel(V) forall V
     enum_stream = map(workers: workers, name: name.try{ |s| "#{s}.map" },
       on_error: on_error, &block)
-    flatten(enum_stream, name, buffer_size)
+    Concur.flatten(enum_stream, name, buffer_size)
   end
 
   # Returns a channel that receives values from `self` transformed via *block* and based
@@ -396,7 +398,7 @@ abstract class ::Channel(T)
   def batch(size : Int32, interval : Time::Span, name = nil, buffer_size = 0) : Channel(Enumerable(T))
     Channel(Enumerable(T)).new(buffer_size).tap { |stream|
       memory = Array(T).new(size)
-      tick = every(interval) { nil }
+      tick = Concur.every(interval) { nil }
       sent = false
       spawn(name: name) do
         loop do
