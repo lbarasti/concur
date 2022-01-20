@@ -56,23 +56,23 @@
       
     </li>
   
-  <li class="parent " data-id="concur/Concur" data-name="concur">
+  <li class=" " data-id="concur/Concur" data-name="concur">
       <a href="Concur.html">Concur</a>
+      
+    </li>
+  
+  <li class="parent " data-id="concur/Future" data-name="future(t)">
+      <a href="Future.html">Future</a>
       
         <ul>
   
-  <li class=" " data-id="concur/Concur/EmptyError" data-name="concur::emptyerror">
-      <a href="Concur/EmptyError.html">EmptyError</a>
+  <li class=" " data-id="concur/Future/EmptyError" data-name="future::emptyerror">
+      <a href="Future/EmptyError.html">EmptyError</a>
       
     </li>
   
-  <li class=" " data-id="concur/Concur/Future" data-name="concur::future(t)">
-      <a href="Concur/Future.html">Future</a>
-      
-    </li>
-  
-  <li class=" " data-id="concur/Concur/Timeout" data-name="concur::timeout">
-      <a href="Concur/Timeout.html">Timeout</a>
+  <li class=" " data-id="concur/Future/Timeout" data-name="future::timeout">
+      <a href="Future/Timeout.html">Timeout</a>
       
     </li>
   
@@ -99,7 +99,7 @@
 </a>concur</h1>
 <p>Concur is organised around two APIs:</p>
 <ul>
-<li>A <code>Future</code> API to deal with asynchronous computations</li>
+<li>A <code><a href="Future.html">Future</a></code> API to deal with asynchronous computations</li>
 <li>An augmented <code><a href="Channel.html">Channel</a></code> API with primitives to simplify event-driven programming.</li>
 </ul>
 <h2><a id="installation" class="anchor" href="#installation">
@@ -122,14 +122,14 @@
     <use href="#octicon-link"/>
   </svg>
 </a>Using Future</h3>
-<p>You can use <code>Future</code> to wrap asynchronous computations that might fail.</p>
+<p>You can use <code><a href="Future.html">Future</a></code> to wrap asynchronous computations that might fail.</p>
 <pre><code class="language-crystal">f <span class="o">=</span> <span class="t">Future</span>.<span class="k">new</span> {
   sleep <span class="n">2</span> <span class="c"># a placeholder for some expensive computation or for a lengthy IO operation</span>
   <span class="s">&quot;Success!&quot;</span>
 }
 
 f.await <span class="c"># =&gt; &quot;Success!&quot;</span></code></pre>
-<p>If you want to keep on manipulating the result of a future in a separate fiber, then you can rely on <code>Future</code>'s instance methods.</p>
+<p>If you want to keep on manipulating the result of a future in a separate fiber, then you can rely on <code><a href="Future.html">Future</a></code>'s instance methods.</p>
 <p>For example, given a future <code>f</code>, you can apply a function to the wrapped value with <code>#map</code>, filter it with <code>#select</code> and recover from failure with <code>#recover</code></p>
 <pre><code class="language-crystal">f.map { <span class="o">|</span>v<span class="o">|</span> v.downcase }
   .<span class="k">select</span> { <span class="o">|</span>v<span class="o">|</span> v.size <span class="o">&lt;</span> <span class="n">3</span> }

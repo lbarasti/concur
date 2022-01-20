@@ -9,13 +9,13 @@
 
 
 
-<link href="../css/style.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="../js/doc.js"></script>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/doc.js"></script>
 
   <meta name="repository-name" content="concur">
-  <title>Concur::Future(T) - concur master</title>
+  <title>Future(T) - concur master</title>
   <script type="text/javascript">
-    CrystalDocs.base_path = "../";
+    CrystalDocs.base_path = "";
   </script>
 </head>
 <body>
@@ -33,7 +33,7 @@
 
     <div class="project-summary">
       <h1 class="project-name">
-        <a href="../index.html">
+        <a href="index.html">
           concur
         </a>
       </h1>
@@ -52,27 +52,27 @@
     <ul>
   
   <li class=" " data-id="concur/Channel" data-name="channel(t)">
-      <a href="../Channel.html">Channel</a>
+      <a href="Channel.html">Channel</a>
       
     </li>
   
-  <li class="parent open current" data-id="concur/Concur" data-name="concur">
-      <a href="../Concur.html">Concur</a>
+  <li class=" " data-id="concur/Concur" data-name="concur">
+      <a href="Concur.html">Concur</a>
+      
+    </li>
+  
+  <li class="parent open current" data-id="concur/Future" data-name="future(t)">
+      <a href="Future.html">Future</a>
       
         <ul>
   
-  <li class=" " data-id="concur/Concur/EmptyError" data-name="concur::emptyerror">
-      <a href="../Concur/EmptyError.html">EmptyError</a>
+  <li class=" " data-id="concur/Future/EmptyError" data-name="future::emptyerror">
+      <a href="Future/EmptyError.html">EmptyError</a>
       
     </li>
   
-  <li class=" current" data-id="concur/Concur/Future" data-name="concur::future(t)">
-      <a href="../Concur/Future.html">Future</a>
-      
-    </li>
-  
-  <li class=" " data-id="concur/Concur/Timeout" data-name="concur::timeout">
-      <a href="../Concur/Timeout.html">Timeout</a>
+  <li class=" " data-id="concur/Future/Timeout" data-name="future::timeout">
+      <a href="Future/Timeout.html">Timeout</a>
       
     </li>
   
@@ -90,12 +90,12 @@
 <div class="main-content">
 <h1 class="type-name">
 
-  <span class="kind">class</span> Concur::Future(T)
+  <span class="kind">class</span> Future(T)
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../Concur/Future.html">Concur::Future(T)</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="Future.html">Future(T)</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
@@ -135,8 +135,8 @@ available at some point, or an exception if that value could not be made availab
   </h2>
   
     
-      <a href="https://github.com/lbarasti/concur/blob/c79157d57bc0cb04cc083890c1c50b843961fca5/src/future.cr#L10" target="_blank">
-        future.cr
+      <a href="https://github.com/lbarasti/concur/blob/fee0b7f51b2a778550f9bca5e9ed65ed0353cb6f/src/concur/future.cr#L3" target="_blank">
+        concur/future.cr
       </a>
     
     <br/>
@@ -180,7 +180,7 @@ available at some point, or an exception if that value could not be made availab
       <li class="entry-summary">
         <a href="#await%28t%3ATime%3A%3ASpan%29%3AT%7CException-instance-method" class="signature"><strong>#await</strong>(t : Time::Span) : T | Exception</a>
         
-          <div class="summary"><p>Same as <code><a href="../Concur/Future.html#await%3AT%7CException-instance-method">#await</a></code>, but returns a <code><a href="../Concur/Timeout.html">Timeout</a></code> exception if the given <code>t</code> expires.</p></div>
+          <div class="summary"><p>Same as <code><a href="Future.html#await%3AT%7CException-instance-method">#await</a></code>, but returns a <code><a href="Future/Timeout.html">Timeout</a></code> exception if the given <code>t</code> expires.</p></div>
         
       </li>
     
@@ -194,7 +194,7 @@ available at some point, or an exception if that value could not be made availab
       <li class="entry-summary">
         <a href="#await%21%28t%3ATime%3A%3ASpan%29%3AT-instance-method" class="signature"><strong>#await!</strong>(t : Time::Span) : T</a>
         
-          <div class="summary"><p>Same as <code><a href="../Concur/Future.html#await%21%3AT-instance-method">#await!</a></code>, but raises a <code><a href="../Concur/Timeout.html">Timeout</a></code> exception if the given <code>t</code> expires.</p></div>
+          <div class="summary"><p>Same as <code><a href="Future.html#await%21%3AT-instance-method">#await!</a></code>, but raises a <code><a href="Future/Timeout.html">Timeout</a></code> exception if the given <code>t</code> expires.</p></div>
         
       </li>
     
@@ -340,7 +340,7 @@ available at some point, or an exception if that value could not be made availab
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/c79157d57bc0cb04cc083890c1c50b843961fca5/src/future.cr#L14" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/fee0b7f51b2a778550f9bca5e9ed65ed0353cb6f/src/concur/future.cr#L13" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -369,13 +369,13 @@ available at some point, or an exception if that value could not be made availab
       
         <div class="doc">
           
-          <p>Same as <code><a href="../Concur/Future.html#await%3AT%7CException-instance-method">#await</a></code>, but returns a <code><a href="../Concur/Timeout.html">Timeout</a></code> exception if the given <code>t</code> expires.</p>
+          <p>Same as <code><a href="Future.html#await%3AT%7CException-instance-method">#await</a></code>, but returns a <code><a href="Future/Timeout.html">Timeout</a></code> exception if the given <code>t</code> expires.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/c79157d57bc0cb04cc083890c1c50b843961fca5/src/future.cr#L53" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/fee0b7f51b2a778550f9bca5e9ed65ed0353cb6f/src/concur/future.cr#L52" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -396,7 +396,7 @@ available at some point, or an exception if that value could not be made availab
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/c79157d57bc0cb04cc083890c1c50b843961fca5/src/future.cr#L27" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/fee0b7f51b2a778550f9bca5e9ed65ed0353cb6f/src/concur/future.cr#L26" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -411,13 +411,13 @@ available at some point, or an exception if that value could not be made availab
       
         <div class="doc">
           
-          <p>Same as <code><a href="../Concur/Future.html#await%21%3AT-instance-method">#await!</a></code>, but raises a <code><a href="../Concur/Timeout.html">Timeout</a></code> exception if the given <code>t</code> expires.</p>
+          <p>Same as <code><a href="Future.html#await%21%3AT-instance-method">#await!</a></code>, but raises a <code><a href="Future/Timeout.html">Timeout</a></code> exception if the given <code>t</code> expires.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/c79157d57bc0cb04cc083890c1c50b843961fca5/src/future.cr#L70" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/fee0b7f51b2a778550f9bca5e9ed65ed0353cb6f/src/concur/future.cr#L69" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -439,7 +439,7 @@ or raises an exception.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/c79157d57bc0cb04cc083890c1c50b843961fca5/src/future.cr#L43" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/fee0b7f51b2a778550f9bca5e9ed65ed0353cb6f/src/concur/future.cr#L42" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -461,7 +461,7 @@ Returns <code>false</code> otherwise.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/c79157d57bc0cb04cc083890c1c50b843961fca5/src/future.cr#L81" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/fee0b7f51b2a778550f9bca5e9ed65ed0353cb6f/src/concur/future.cr#L80" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -469,7 +469,7 @@ Returns <code>false</code> otherwise.</p>
     <div class="entry-detail" id="flat_map(&amp;block:T-&gt;Future(K)):Future(K)forallK-instance-method">
       <div class="signature">
         
-        def <strong>flat_map</strong>(&block : T -> <a href="../Concur/Future.html">Future</a>(K)) : <a href="../Concur/Future.html">Future</a>(K) forall K
+        def <strong>flat_map</strong>(&block : T -> <a href="Future.html">Future</a>(K)) : <a href="Future.html">Future</a>(K) forall K
 
         <a class="method-permalink" href="#flat_map%28%26block%3AT-%3EFuture%28K%29%29%3AFuture%28K%29forallK-instance-method">#</a>
       </div>
@@ -484,7 +484,7 @@ and returns the result of the function as the new future.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/c79157d57bc0cb04cc083890c1c50b843961fca5/src/future.cr#L89" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/fee0b7f51b2a778550f9bca5e9ed65ed0353cb6f/src/concur/future.cr#L88" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -505,7 +505,7 @@ and returns the result of the function as the new future.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/c79157d57bc0cb04cc083890c1c50b843961fca5/src/future.cr#L96" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/fee0b7f51b2a778550f9bca5e9ed65ed0353cb6f/src/concur/future.cr#L95" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -513,7 +513,7 @@ and returns the result of the function as the new future.</p>
     <div class="entry-detail" id="map(&amp;block:T-&gt;K):Future(K)forallK-instance-method">
       <div class="signature">
         
-        def <strong>map</strong>(&block : T -> K) : <a href="../Concur/Future.html">Future</a>(K) forall K
+        def <strong>map</strong>(&block : T -> K) : <a href="Future.html">Future</a>(K) forall K
 
         <a class="method-permalink" href="#map%28%26block%3AT-%3EK%29%3AFuture%28K%29forallK-instance-method">#</a>
       </div>
@@ -527,7 +527,7 @@ and returns the result of the function as the new future.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/c79157d57bc0cb04cc083890c1c50b843961fca5/src/future.cr#L103" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/fee0b7f51b2a778550f9bca5e9ed65ed0353cb6f/src/concur/future.cr#L102" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -549,7 +549,7 @@ that conforms to type <code>typ</code> or a <code>TypeCastError</code> otherwise
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/c79157d57bc0cb04cc083890c1c50b843961fca5/src/future.cr#L116" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/fee0b7f51b2a778550f9bca5e9ed65ed0353cb6f/src/concur/future.cr#L115" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -557,7 +557,7 @@ that conforms to type <code>typ</code> or a <code>TypeCastError</code> otherwise
     <div class="entry-detail" id="on_complete(&amp;block:T|Exception-&gt;_):Future(T)-instance-method">
       <div class="signature">
         
-        def <strong>on_complete</strong>(&block : T | Exception -> _) : <a href="../Concur/Future.html">Future</a>(T)
+        def <strong>on_complete</strong>(&block : T | Exception -> _) : <a href="Future.html">Future</a>(T)
 
         <a class="method-permalink" href="#on_complete%28%26block%3AT%7CException-%3E_%29%3AFuture%28T%29-instance-method">#</a>
       </div>
@@ -567,15 +567,15 @@ that conforms to type <code>typ</code> or a <code>TypeCastError</code> otherwise
           <p>Applies the side-effecting function to the result of this future, and returns a new future
 with the result of this future.</p>
 <p>This method allows one to enforce that the callbacks are executed in a specified order.
-Note: if one of the chained <code><a href="../Concur/Future.html#on_complete%28%26block%3AT%7CException-%3E_%29%3AFuture%28T%29-instance-method">#on_complete</a></code> callbacks throws an exception, that exception is not
-propagated to the subsequent <code><a href="../Concur/Future.html#on_complete%28%26block%3AT%7CException-%3E_%29%3AFuture%28T%29-instance-method">#on_complete</a></code> callbacks. Instead, the subsequent <code><a href="../Concur/Future.html#on_complete%28%26block%3AT%7CException-%3E_%29%3AFuture%28T%29-instance-method">#on_complete</a></code> callbacks
+Note: if one of the chained <code><a href="Future.html#on_complete%28%26block%3AT%7CException-%3E_%29%3AFuture%28T%29-instance-method">#on_complete</a></code> callbacks throws an exception, that exception is not
+propagated to the subsequent <code><a href="Future.html#on_complete%28%26block%3AT%7CException-%3E_%29%3AFuture%28T%29-instance-method">#on_complete</a></code> callbacks. Instead, the subsequent <code><a href="Future.html#on_complete%28%26block%3AT%7CException-%3E_%29%3AFuture%28T%29-instance-method">#on_complete</a></code> callbacks
 are given the original value of this future.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/c79157d57bc0cb04cc083890c1c50b843961fca5/src/future.cr#L127" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/fee0b7f51b2a778550f9bca5e9ed65ed0353cb6f/src/concur/future.cr#L126" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -583,7 +583,7 @@ are given the original value of this future.</p>
     <div class="entry-detail" id="on_error(&amp;block:Exception-&gt;_):Future(T)-instance-method">
       <div class="signature">
         
-        def <strong>on_error</strong>(&block : Exception -> _) : <a href="../Concur/Future.html">Future</a>(T)
+        def <strong>on_error</strong>(&block : Exception -> _) : <a href="Future.html">Future</a>(T)
 
         <a class="method-permalink" href="#on_error%28%26block%3AException-%3E_%29%3AFuture%28T%29-instance-method">#</a>
       </div>
@@ -598,7 +598,7 @@ returns a new future with the result of this future.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/c79157d57bc0cb04cc083890c1c50b843961fca5/src/future.cr#L158" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/fee0b7f51b2a778550f9bca5e9ed65ed0353cb6f/src/concur/future.cr#L157" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -606,7 +606,7 @@ returns a new future with the result of this future.</p>
     <div class="entry-detail" id="on_success(&amp;block:T-&gt;_):Future(T)-instance-method">
       <div class="signature">
         
-        def <strong>on_success</strong>(&block : T -> _) : <a href="../Concur/Future.html">Future</a>(T)
+        def <strong>on_success</strong>(&block : T -> _) : <a href="Future.html">Future</a>(T)
 
         <a class="method-permalink" href="#on_success%28%26block%3AT-%3E_%29%3AFuture%28T%29-instance-method">#</a>
       </div>
@@ -621,7 +621,7 @@ returns a new future with the result of this future.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/c79157d57bc0cb04cc083890c1c50b843961fca5/src/future.cr#L145" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/fee0b7f51b2a778550f9bca5e9ed65ed0353cb6f/src/concur/future.cr#L144" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -629,7 +629,7 @@ returns a new future with the result of this future.</p>
     <div class="entry-detail" id="recover(&amp;block:Exception-&gt;T):Future(T)-instance-method">
       <div class="signature">
         
-        def <strong>recover</strong>(&block : Exception -> T) : <a href="../Concur/Future.html">Future</a>(T)
+        def <strong>recover</strong>(&block : Exception -> T) : <a href="Future.html">Future</a>(T)
 
         <a class="method-permalink" href="#recover%28%26block%3AException-%3ET%29%3AFuture%28T%29-instance-method">#</a>
       </div>
@@ -643,7 +643,7 @@ If there is no match, or if this future contains a valid result then the new fut
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/c79157d57bc0cb04cc083890c1c50b843961fca5/src/future.cr#L169" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/fee0b7f51b2a778550f9bca5e9ed65ed0353cb6f/src/concur/future.cr#L168" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -651,7 +651,7 @@ If there is no match, or if this future contains a valid result then the new fut
     <div class="entry-detail" id="select(&amp;block:T-&gt;Bool):Future(T)-instance-method">
       <div class="signature">
         
-        def <strong>select</strong>(&block : T -> Bool) : <a href="../Concur/Future.html">Future</a>(T)
+        def <strong>select</strong>(&block : T -> Bool) : <a href="Future.html">Future</a>(T)
 
         <a class="method-permalink" href="#select%28%26block%3AT-%3EBool%29%3AFuture%28T%29-instance-method">#</a>
       </div>
@@ -660,14 +660,14 @@ If there is no match, or if this future contains a valid result then the new fut
           
           <p>Creates a new future by filtering the value of the current future with a predicate.</p>
 <p>If the current future contains a value which satisfies the predicate, the new future will also hold that value.
-Otherwise, the resulting future will fail with a <code><a href="../Concur/EmptyError.html">EmptyError</a></code>.
+Otherwise, the resulting future will fail with a <code><a href="Future/EmptyError.html">EmptyError</a></code>.
 If the current future fails, then the resulting future also fails.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/c79157d57bc0cb04cc083890c1c50b843961fca5/src/future.cr#L185" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/fee0b7f51b2a778550f9bca5e9ed65ed0353cb6f/src/concur/future.cr#L184" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -675,7 +675,7 @@ If the current future fails, then the resulting future also fails.</p>
     <div class="entry-detail" id="transform(&amp;block:T|Exception-&gt;K):Future(K)forallK-instance-method">
       <div class="signature">
         
-        def <strong>transform</strong>(&block : T | Exception -> K) : <a href="../Concur/Future.html">Future</a>(K) forall K
+        def <strong>transform</strong>(&block : T | Exception -> K) : <a href="Future.html">Future</a>(K) forall K
 
         <a class="method-permalink" href="#transform%28%26block%3AT%7CException-%3EK%29%3AFuture%28K%29forallK-instance-method">#</a>
       </div>
@@ -690,7 +690,7 @@ will be propagated to the resulting future.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/c79157d57bc0cb04cc083890c1c50b843961fca5/src/future.cr#L199" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/fee0b7f51b2a778550f9bca5e9ed65ed0353cb6f/src/concur/future.cr#L198" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -698,7 +698,7 @@ will be propagated to the resulting future.</p>
     <div class="entry-detail" id="zip(other:Future(K),&amp;block:T,K-&gt;W):Future(W)forallK,W-instance-method">
       <div class="signature">
         
-        def <strong>zip</strong>(other : <a href="../Concur/Future.html">Future</a>(K), &block : T, K -> W) : <a href="../Concur/Future.html">Future</a>(W) forall K, W
+        def <strong>zip</strong>(other : <a href="Future.html">Future</a>(K), &block : T, K -> W) : <a href="Future.html">Future</a>(W) forall K, W
 
         <a class="method-permalink" href="#zip%28other%3AFuture%28K%29%2C%26block%3AT%2CK-%3EW%29%3AFuture%28W%29forallK%2CW-instance-method">#</a>
       </div>
@@ -711,7 +711,7 @@ will be propagated to the resulting future.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/lbarasti/concur/blob/c79157d57bc0cb04cc083890c1c50b843961fca5/src/future.cr#L206" target="_blank">View source</a>]
+          [<a href="https://github.com/lbarasti/concur/blob/fee0b7f51b2a778550f9bca5e9ed65ed0353cb6f/src/concur/future.cr#L205" target="_blank">View source</a>]
         
       </div>
     </div>
