@@ -1,5 +1,4 @@
 require "../src/concur"
-include Concur
 
 record KeyboardEvent, id : Int32, key : Char
 record MouseEvent, id : Int32, pos : {Int32, Int32}

@@ -1,13 +1,12 @@
 require "yaml"
 require "http/client"
 require "../src/concur"
-require "dataclass"
 require "agent"
 require "crt"
 require "tablo"
 extend Concur
 
-dataclass StatsCount{success : Hash(String, Int32), failure : Hash(String, Int32)}
+record StatsCount, success : Hash(String, Int32), failure : Hash(String, Int32)
 
 class Stats
   @success : Agent(Hash(String, Int32))

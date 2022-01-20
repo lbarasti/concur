@@ -13,6 +13,6 @@ pp Concur.source(Random.new) { |gen| {gen, {gen.rand, gen.rand}} }
   .select { |estimates|
     estimates.all? { |(i, e)|
       (e - Math::PI).abs / Math::PI < 1e-5
-    } 
+    }
   }.flat_map { |estimates| estimates.map(&.first) }
   .take 1

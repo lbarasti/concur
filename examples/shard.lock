@@ -8,15 +8,11 @@ shards:
     git: https://github.com/maiha/crt.cr.git
     version: 0.4.0
 
-  dataclass:
-    git: https://github.com/lbarasti/dataclass.git
-    version: 1.1.1
-
   rate_limiter:
     git: https://github.com/lbarasti/rate_limiter.git
     version: 1.0.1
 
   tablo:
     git: https://github.com/hutou/tablo.git
-    version: 0.9.5
+    version: 0.10.1
 

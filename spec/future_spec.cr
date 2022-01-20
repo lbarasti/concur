@@ -47,7 +47,7 @@ describe Future do
   it "can be awaited on with timeout" do
     f = Future.new { sleep 0.6; 42 }
     f.await(0.2.seconds)
-      .should be_a Concur::Timeout
+      .should be_a Future::Timeout
     f.await
       .should eq 42
     f.await(0.1.seconds)
@@ -56,7 +56,7 @@ describe Future do
 
   it "can be awaited on with timeout and raise on exception" do
     f = Future.new { sleep 0.4; raise CustomError.new("error"); 42 }
-    expect_raises(Concur::Timeout) {
+    expect_raises(Future::Timeout) {
       f.await!(0.2.seconds)
     }
     expect_raises(CustomError) {
@@ -124,11 +124,11 @@ describe Future do
       results << ex.as(CustomError)
       raise Exception.new("runtime exception")
     }.on_error { |ex|
-      results << Timeout.new
+      results << Future::Timeout.new
     }.await.should be_a CustomError
 
     results.first.should be_a CustomError
-    results.last.should be_a Timeout
+    results.last.should be_a Future::Timeout
   end
 
   it "will not run #on_error callbacks if the future succeeds" do
@@ -172,7 +172,7 @@ end
     g = f.select { |x| x % 2 == 1 }
     h = f.select { |x| x % 2 == 0 }
     g.await.should eq 5
-    h.await.should be_a Concur::EmptyError
+    h.await.should be_a Future::EmptyError
   end
 
   it "supports combining two futures with #flat_map" do

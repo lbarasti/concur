@@ -10,7 +10,7 @@ describe "Future example" do
     f.map { |v| v.downcase }
       .select { |v| v.size < 3 }
       .recover { |ex| ex.message || ex.class.to_s }
-      .await.should eq "Concur::EmptyError"
+      .await.should eq "Future::EmptyError"
   end
 
   it "showcases #zip and #flat_map" do

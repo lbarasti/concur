@@ -4,9 +4,7 @@ version: 0.1.0
 authors:
   - lbarasti <lbarasti@users.noreply.github.com>
 
-dependencies: 
-  dataclass:
-    github: lbarasti/dataclass
+dependencies:
   agent:
     github: lbarasti/agent
   rate_limiter:
